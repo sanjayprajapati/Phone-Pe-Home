@@ -1,5 +1,7 @@
 // Create Token and saving in cookie
 
+const sendOtp = require("./senOtp");
+
 const sendToken = (user, statusCode, res) => {
   const token = user.getJWTToken();
 
@@ -10,7 +12,7 @@ const sendToken = (user, statusCode, res) => {
     ),
     httpOnly: true,
   };
-
+  sendOtp(user.mobileOtp, user.mobile);
   res.status(statusCode).cookie("token", token, options).json({
     success: true,
     user,

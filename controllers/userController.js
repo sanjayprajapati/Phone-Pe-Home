@@ -1,49 +1,40 @@
 const User = require("../models/User");
 const sendToken = require("../utils/jwtToken");
 const otpGenerator = require("otp-generator");
-const sid = process.env.ACCOUNT_SID || "AC51b9621ee0bb5af27c7fe885fac8ff31";
-const auth_token = process.env.AUTH_TOKEN || "ed8e3f1e223ac2fe3f66301427264fe8";
-console.log(sid);
-const twilio = require("twilio")(sid, auth_token);
+const sendOtp = require("../utils/senOtp");
+const sendEmail = require("../utils/sendMail");
+
+// const auth_token = process.env.AUTH_TOKEN;
+
+// const twilio = require("twilio")(
+//   process.env.ACCOUNT_SID,
+//   process.env.AUTH_TOKEN
+// );
 
 // User Registration
 exports.userRegister = async (req, res, next) => {
   try {
-    const { name, email, mobile } = req.body;
-    console.log(req.body);
-
+    const { name, email, mobile, password } = req.body;
+    //console.log(sid);
     const user = await User.create({
       name,
       email,
       mobile,
+      password,
     });
 
     req.user = user._id;
-    console.log(req.user);
 
     user.generateOtp();
 
     await user.save();
     const otp = user.mobileOtp;
 
-    twilio.messages
-      .create({
-        from: "+18632165147",
-        to: `+91${mobile}`,
-        body: `Your One Time Passwor is ${otp}. Please do not share with anyone.`,
-      })
-      .then(function (res) {
-        console.log("messages send successfylly");
-      })
-      .catch(function (err) {
-        user.mobileOtp = undefined;
-        user.otpExpire = undefined;
-
-        user.save({ validateBeforeSave: false });
-        console.log(err);
-      });
-
-    sendToken(user, 201, res);
+    sendOtp(otp, user.mobileOtp);
+    res.status(200).json({
+      success: true,
+      message: "OTP sent to your mobile, please verify!",
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -52,43 +43,57 @@ exports.userRegister = async (req, res, next) => {
 
 exports.userLogin = async (req, res, next) => {
   try {
-    const { mobile } = req.body;
+    const { userDetail, password } = req.body;
 
-    if (!mobile) {
-      res.status(400).json({ success: false, message: "Invailid Mobile no." });
+    if (!userDetail || !password) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Both fields are required!" });
     }
 
-    const user = await User.findOne({ mobile });
+    let user = await User.findOne({ email: userDetail });
+
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "User not registered with this mobile no. Please Register first.",
+      user = await User.findOne({ mobile: userDetail }).select("+password");
+      const isPasswordMatched = await user.comparePassword(password);
+      //console.log("checked");
+      if (!isPasswordMatched) {
+        return res.status(401).json({
+          success: false,
+          message: "Wrong credentials!",
+        });
+      }
+      // generate otp
+      user.generateOtp();
+      await user.save({ validateBeforeSave: false });
+      sendOtp(user.mobileOtp, user.mobile);
+      res.status(200).json({
+        success: true,
+        message: "OTP sent to your mobile, please verify!",
+      });
+    } else {
+      //console.log(user);
+      user = await User.findOne({ email: userDetail }).select("+password");
+
+      const isPasswordMatched = await user.comparePassword(password);
+      //console.log("checked");
+      if (!isPasswordMatched) {
+        return res.status(401).json({
+          success: false,
+          message: "Wrong credentials!",
+        });
+      }
+      // generate otp
+      user.generateOtp();
+      await user.save({ validateBeforeSave: false });
+
+      sendOtp(user.mobileOtp, user.mobile);
+
+      res.status(200).json({
+        success: true,
+        message: "OTP sent to your mobile, please verify!",
       });
     }
-    // generate otp
-    user.generateOtp();
-    await user.save({ validateBeforeSave: false });
-
-    const otp = user.mobileOtp;
-    twilio.messages
-      .create({
-        from: "+18632165147",
-        to: `+91${mobile}`,
-        body: `Your One Time Passwor is ${otp}. Please do not share with anyone.`,
-      })
-      .then(function (res) {
-        console.log("messages send successfylly");
-      })
-      .catch(function (err) {
-        user.mobileOtp = undefined;
-        user.otpExpire = undefined;
-
-        user.save({ validateBeforeSave: false });
-        console.log(err);
-      });
-
-    sendToken(user, 200, res);
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -101,21 +106,18 @@ exports.verifyOtp = async (req, res, next) => {
     if (!mobileOtp) {
       return res
         .status(400)
-        .json({ success: false, message: "Please Enter otp" });
+        .json({ success: false, message: "Please Enter otp!" });
     }
 
-    const user = await User.findOne({ mobileOtp });
+    const user = await User.findOne({
+      mobileOtp,
+      otpExpire: { $gt: Date.now() },
+    });
+
     if (!user) {
-      return res.status(401).json({
+      return res.status(400).json({
         success: false,
-        message: "Invailid Otp",
-      });
-    }
-    const expiredOtp = user.otpExpire;
-    if (expiredOtp < Date.now()) {
-      return res.status(401).json({
-        success: false,
-        message: "Otp Expired!",
+        message: "OTP is invalid or has been expired!",
       });
     }
 
@@ -123,11 +125,81 @@ exports.verifyOtp = async (req, res, next) => {
     user.otpExpire = "";
     await user.save();
 
+    sendToken(user, 200, res);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Resend otp
+exports.resendOtp = async (req, res, next) => {
+  console.log(req.user);
+};
+
+// forgot password
+
+exports.forgotPassword = async (req, res, next) => {
+  const { userDetail } = req.body;
+
+  if (!userDetail) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Email/phone is required!" });
+  }
+
+  try {
+    let user = await User.findOne({ email: userDetail });
+
+    if (!user) {
+      user = await User.findOne({ mobile: userDetail });
+    }
+
+    // generate otp
+    user.generateOtp();
+    await user.save({ validateBeforeSave: false });
+
+    sendOtp(user.mobileOtp, user.mobile);
+
     res.status(200).json({
       success: true,
-      message: "Otp Verification Successfull.",
-      user,
+      message: "OTP sent to your mobile, please verify!",
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// reset password
+exports.resetPassword = async (req, res, next) => {
+  const { mobileOtp, newpassword, confirmPassword } = req.body;
+
+  try {
+    const user = await User.findOne({
+      mobileOtp,
+      otpExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "OTP is invalid or has been expired!",
+      });
+    }
+
+    if (newpassword !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Password does not match!" });
+    }
+
+    user.password = newpassword;
+    user.mobileOtp = undefined;
+    user.otpExpire = undefined;
+
+    await user.save();
+    res
+      .status(200)
+      .json({ success: true, message: "Password updated successfuly!" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

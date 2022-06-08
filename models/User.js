@@ -23,6 +23,12 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please Enter your Mobile No."],
     match: [rejx, "Please enter a valid mobile no"],
   },
+  password: {
+    type: String,
+    required: [true, "Please enter your password"],
+    minlength: [8, "Password Must be greater than 8 characters"],
+    select: false,
+  },
   mobileOtp: {
     type: String,
   },
@@ -88,7 +94,7 @@ UserSchema.methods.generateOtp = function () {
 
   this.mobileOtp = otp;
 
-  this.otpExpire = Date.now() + 1 * 60 * 1000;
+  this.otpExpire = Date.now() + 3 * 60 * 1000;
 };
 
 module.exports = mongoose.model("User", UserSchema);
