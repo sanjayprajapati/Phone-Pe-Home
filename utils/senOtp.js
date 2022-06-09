@@ -1,4 +1,4 @@
-const sendOtp = (otp, phone, res, next) => {
+const sendOtp = (otp, phone, message, res, next) => {
   const sid = process.env.ACCOUNT_SID;
   const token = process.env.AUTH_TOKEN;
   const twilloNum = process.env.ACCOUNT_NUMBER;
@@ -12,14 +12,14 @@ const sendOtp = (otp, phone, res, next) => {
     })
     .then(function (res) {
       console.log("Otp send successfylly");
-      return;
+      res.json({ success: true, message });
     })
     .catch(function (err) {
       user.mobileOtp = undefined;
       user.otpExpire = undefined;
 
       user.save({ validateBeforeSave: false });
-      console.log(err);
+      res.json({ success: false, message: err.message });
     });
 };
 

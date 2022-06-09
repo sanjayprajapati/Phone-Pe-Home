@@ -16,7 +16,6 @@ router.route("/login").post(userLogin);
 router.route("/forgotpassword").post(forgotPassword);
 router.route("/verifyotp").post(verifyOtp);
 router.route("/resendOtp").get(resendOtp);
-router.route("/login/veifyotp").post(verifyOtp);
 router.route("/register/veifyotp").post(verifyOtp);
 router.route("/resetpassword").put(resetPassword);
 

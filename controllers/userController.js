@@ -30,13 +30,9 @@ exports.userRegister = async (req, res, next) => {
     await user.save();
     const otp = user.mobileOtp;
 
-    sendOtp(otp, user.mobileOtp);
-    res.status(200).json({
-      success: true,
-      message: "OTP sent to your mobile, please verify!",
-    });
+    sendOtp(otp, user.mobileOtp, "OTP sent please verify!");
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
 // User login web with email password
@@ -46,9 +42,7 @@ exports.userLogin = async (req, res, next) => {
     const { userDetail, password } = req.body;
 
     if (!userDetail || !password) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Both fields are required!" });
+      return res.json({ success: false, message: "Both fields are required!" });
     }
 
     let user = await User.findOne({ email: userDetail });
@@ -58,19 +52,12 @@ exports.userLogin = async (req, res, next) => {
       const isPasswordMatched = await user.comparePassword(password);
       //console.log("checked");
       if (!isPasswordMatched) {
-        return res.status(401).json({
+        return res.json({
           success: false,
           message: "Wrong credentials!",
         });
       }
-      // generate otp
-      user.generateOtp();
-      await user.save({ validateBeforeSave: false });
-      sendOtp(user.mobileOtp, user.mobile);
-      res.status(200).json({
-        success: true,
-        message: "OTP sent to your mobile, please verify!",
-      });
+      sendToken(user, 200, res);
     } else {
       //console.log(user);
       user = await User.findOne({ email: userDetail }).select("+password");
@@ -78,24 +65,16 @@ exports.userLogin = async (req, res, next) => {
       const isPasswordMatched = await user.comparePassword(password);
       //console.log("checked");
       if (!isPasswordMatched) {
-        return res.status(401).json({
+        return res.json({
           success: false,
           message: "Wrong credentials!",
         });
       }
-      // generate otp
-      user.generateOtp();
-      await user.save({ validateBeforeSave: false });
 
-      sendOtp(user.mobileOtp, user.mobile);
-
-      res.status(200).json({
-        success: true,
-        message: "OTP sent to your mobile, please verify!",
-      });
+      sendToken(user, 200, res);
     }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
 // verify otp
@@ -127,14 +106,14 @@ exports.verifyOtp = async (req, res, next) => {
 
     sendToken(user, 200, res);
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
 
 // Resend otp
 exports.resendOtp = async (req, res, next) => {
   console.log("Jai ho");
-  res.status(200).json({ success: true, message: "Route Working fine!" });
+  res.json({ success: true, message: "Route Working fine!" });
 };
 
 // forgot password
@@ -143,9 +122,7 @@ exports.forgotPassword = async (req, res, next) => {
   const { userDetail } = req.body;
 
   if (!userDetail) {
-    return res
-      .status(400)
-      .json({ success: false, message: "Email/phone is required!" });
+    return res.json({ success: false, message: "Email/phone is required!" });
   }
 
   try {
@@ -159,14 +136,9 @@ exports.forgotPassword = async (req, res, next) => {
     user.generateOtp();
     await user.save({ validateBeforeSave: false });
 
-    sendOtp(user.mobileOtp, user.mobile);
-
-    res.status(200).json({
-      success: true,
-      message: "OTP sent to your mobile, please verify!",
-    });
+    sendOtp(user.mobileOtp, user.mobile, "OTP sent please verify");
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
 
@@ -188,9 +160,7 @@ exports.resetPassword = async (req, res, next) => {
     }
 
     if (newpassword !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Password does not match!" });
+      return res.json({ success: false, message: "Password does not match!" });
     }
 
     user.password = newpassword;
@@ -198,10 +168,8 @@ exports.resetPassword = async (req, res, next) => {
     user.otpExpire = undefined;
 
     await user.save();
-    res
-      .status(200)
-      .json({ success: true, message: "Password updated successfuly!" });
+    res.json({ success: true, message: "Password updated successfuly!" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.json({ success: false, message: error.message });
   }
 };
