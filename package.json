@@ -25,5 +25,13 @@
     "otp-generator": "^4.0.0",
     "twilio": "^3.77.2",
     "validator": "^13.7.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanjayprajapati/Phone-Pe-Home.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sanjayprajapati/Phone-Pe-Home/issues"
+  },
+  "homepage": "https://github.com/sanjayprajapati/Phone-Pe-Home#readme"
 }

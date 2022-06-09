@@ -133,7 +133,8 @@ exports.verifyOtp = async (req, res, next) => {
 
 // Resend otp
 exports.resendOtp = async (req, res, next) => {
-  console.log(req.user);
+  console.log('Yes');
+  res.status(200).json({success:true,message: "Yes it works"})
 };
 
 // forgot password
