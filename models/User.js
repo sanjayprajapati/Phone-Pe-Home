@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const rejx = /^[6789][0-9]{9}$/;
-const otpGenerator = require("otp-generator");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -29,8 +28,9 @@ const UserSchema = new mongoose.Schema({
     minlength: [8, "Password Must be greater than 8 characters"],
     select: false,
   },
-  mobileOtp: {
-    type: String,
+  avatar: {
+    public_id: String,
+    url: String,
   },
   role: {
     type: String,
@@ -46,6 +46,13 @@ const UserSchema = new mongoose.Schema({
     enum: ["ACTIVE", "INACTIVE"],
     default: "ACTIVE",
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
+  otp: {
+    type: Number,
+  },
   otpExpire: Date,
 });
 UserSchema.index({ email: 1, mobile: 1 }, { unique: true });
@@ -54,7 +61,7 @@ UserSchema.pre("save", async function (next) {
     next();
   }
 
-  this.password = await bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 12);
 });
 // JWT TOKEN
 UserSchema.methods.getJWTToken = function () {
@@ -85,14 +92,9 @@ UserSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 UserSchema.methods.generateOtp = function () {
-  const otp = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
-    digits: true,
-    lowerCaseAlphabets: false,
-  });
+  const otp = Math.floor(Math.random() * 1000000);
 
-  this.mobileOtp = otp;
+  this.otp = otp;
 
   this.otpExpire = Date.now() + 3 * 60 * 1000;
 };
