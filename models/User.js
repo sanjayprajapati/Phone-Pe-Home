@@ -54,6 +54,8 @@ const UserSchema = new mongoose.Schema({
     type: Number,
   },
   otpExpire: Date,
+  resetPasswordOtp: Number,
+  resetPasswordOtpExpire: Date,
 });
 UserSchema.index({ email: 1, mobile: 1 }, { unique: true });
 UserSchema.pre("save", async function (next) {
@@ -77,26 +79,16 @@ UserSchema.methods.comparePassword = async function (enteredPpassword) {
 };
 
 // Generating Password Reset Token
-UserSchema.methods.getResetPasswordToken = function () {
+UserSchema.methods.getResetPasswordOtp = function () {
   // Generating Token
-  const resetToken = crypto.randomBytes(20).toString("hex");
+  const resetOtp = Math.floor(Math.random() * 1000000);
 
-  // Hashing and adding resetPasswordToken to userSchema
-  this.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+  this.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
 
-  this.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
-
-  return resetToken;
+  return resetOtp;
 };
-UserSchema.methods.generateOtp = function () {
-  const otp = Math.floor(Math.random() * 1000000);
 
-  this.otp = otp;
-
-  this.otpExpire = Date.now() + 3 * 60 * 1000;
-};
+// Deleting user if not verified
+UserSchema.index({ otpExpire: 1 }, { expireAfterSeconds: 0 })
 
 module.exports = mongoose.model("User", UserSchema);

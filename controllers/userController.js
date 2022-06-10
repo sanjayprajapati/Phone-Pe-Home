@@ -1,11 +1,13 @@
 const User = require("../models/User");
+const ErrorHandler = require("../utils/errorHandler");
 const sendToken = require("../utils/sendToken");
-const sendOtp = require("../utils/senOtp");
+const sendOtp = require("../utils/sendOtp");
 const sendEmail = require("../utils/sendMail");
+const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 
 // User Registration
-exports.userRegister = async (req, res, next) => {
-  try {
+exports.userRegister = catchAsyncErrors(async (req, res, next) => {
+  
     const { name, email, mobile, password } = req.body;
 
     let user = await User.findOne({ email });
@@ -16,40 +18,32 @@ exports.userRegister = async (req, res, next) => {
         .json({ success: false, message: "User already exists" });
     }
 
+    const otp = Math.floor(Math.random * 1000000);
+
     user = await User.create({
       name,
       email,
       mobile,
-      avatar: {
-        public_id: "String",
-        url: "String",
-      },
       password,
+      otp,
+      otpExpire: Date.now() * process.env.OTP_EXPIRE * 60 * 1000
     });
 
-    user.generateOtp();
-
-    await user.save();
-    const otp = user.otp;
 
     //sendOtp(otp, user.otp, "OTP sent please verify!");
     await sendEmail({
-      email: user.email,
+      email,
       subject: `Verify your account`,
       message: `Your OTP is ${otp}`,
     });
-    sendToken(
-      res,
-      user,
-      201,
-      "OTP sent to your email, please verify your account"
-    );
-  } catch (error) {
-    res.json({ success: false, message: error.message });
-  }
-};
 
-export const verify = async (req, res) => {
+    await sendOtp(otp, mobile);
+
+    res.status(201).json({success: true, message: "OTP sent to your email & phone, please verify your account"})
+
+});
+
+exports.verify = async (req, res) => {
   try {
     const otp = Number(req.body.otp);
 
