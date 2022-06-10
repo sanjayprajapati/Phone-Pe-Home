@@ -89,6 +89,6 @@ UserSchema.methods.getResetPasswordOtp = function () {
 };
 
 // Deleting user if not verified
-UserSchema.index({ otpExpire: 1 }, { expireAfterSeconds: 0 })
+UserSchema.index({ otpExpire: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model("User", UserSchema);

@@ -4,52 +4,68 @@ const sendToken = require("../utils/sendToken");
 const sendOtp = require("../utils/sendOtp");
 const sendEmail = require("../utils/sendMail");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
+const otpGenerator = require("otp-generator");
 
 // User Registration
 exports.userRegister = catchAsyncErrors(async (req, res, next) => {
-  
-    const { name, email, mobile, password } = req.body;
+  const { name, email, mobile, password } = req.body;
 
-    let user = await User.findOne({ email });
+  let user = await User.findOne({ email });
 
-    if (user) {
-      return res
-        .status(400)
-        .json({ success: false, message: "User already exists" });
-    }
+  if (user) {
+    return next(new ErrorHandler("User already exists", 400));
+  }
 
-    const otp = Math.floor(Math.random * 1000000);
+  user = await User.findOne({ mobile });
 
-    user = await User.create({
-      name,
-      email,
-      mobile,
-      password,
-      otp,
-      otpExpire: Date.now() * process.env.OTP_EXPIRE * 60 * 1000
-    });
+  if (user) {
+    return next(
+      new ErrorHandler(
+        "Mobile no. is already registered with other account",
+        400
+      )
+    );
+  }
 
+  const otp = otpGenerator.generate(6, {
+    upperCaseAlphabets: false,
+    lowerCaseAlphabets: false,
+    specialChars: false,
+  });
+  console.log(otp);
+  const otpExpire = new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000);
 
-    //sendOtp(otp, user.otp, "OTP sent please verify!");
-    await sendEmail({
-      email,
-      subject: `Verify your account`,
-      message: `Your OTP is ${otp}`,
-    });
+  user = await User.create({
+    name,
+    email,
+    mobile,
+    password,
+    otp,
+    otpExpire,
+  });
 
-    await sendOtp(otp, mobile);
+  //sendOtp(otp, user.otp, "OTP sent please verify!");
+  await sendEmail({
+    email,
+    subject: `Verify your account`,
+    message: `Your OTP is ${otp}`,
+  });
 
-    res.status(201).json({success: true, message: "OTP sent to your email & phone, please verify your account"})
+  await sendOtp(otp, mobile);
 
+  res.status(201).json({
+    success: true,
+    message: "OTP sent to your email & phone, please verify your account",
+  });
 });
 
-exports.verify = async (req, res) => {
+exports.verifyOtp = async (req, res) => {
   try {
     const otp = Number(req.body.otp);
 
-    const user = await User.findById(req.user._id);
+    const user = await User.findOne({ otp, otpExpire: { $gt: Date.now() } });
 
-    if (user.otp !== otp || user.otp_expiry < Date.now()) {
+    if (!user) {
       return res
         .status(400)
         .json({ success: false, message: "Invalid OTP or has been Expired" });
@@ -68,122 +84,57 @@ exports.verify = async (req, res) => {
 };
 // User login web with email password
 
-// exports.userLogin = async (req, res, next) => {
-//   try {
-//     const { userDetail, password } = req.body;
+exports.userLogin = async (req, res, next) => {
+  try {
+    const { userDetail, password } = req.body;
 
-//     if (!userDetail || !password) {
-//       return res.json({ success: false, message: "Both fields are required!" });
-//     }
+    if (!userDetail || !password) {
+      return next(new ErrorHandler("Both fields are required!", 400));
+    }
 
-//     let user = await User.findOne({ email: userDetail });
+    let user = await User.findOne({ email: userDetail });
 
-//     if (!user) {
-//       user = await User.findOne({ mobile: userDetail }).select("+password");
-//       if (!user) {
-//         return res.json({
-//           success: false,
-//           message: "Wrong credentials!",
-//         });
-//       }
-//       const isPasswordMatched = await user.comparePassword(password);
-//       //console.log("checked");
-//       if (!isPasswordMatched) {
-//         return res.json({
-//           success: false,
-//           message: "Wrong credentials!",
-//         });
-//       }
-//       sendToken(user, 200, res);
-//     } else {
-//       //console.log(user);
-//       user = await User.findOne({ email: userDetail }).select("+password");
-//       if (!user) {
-//         return res.json({
-//           success: false,
-//           message: "Wrong credentials!",
-//         });
-//       }
-//       const isPasswordMatched = await user.comparePassword(password);
-//       //console.log("checked");
-//       if (!isPasswordMatched) {
-//         return res.json({
-//           success: false,
-//           message: "Wrong credentials!",
-//         });
-//       }
+    if (!user) {
+      user = await User.findOne({ mobile: userDetail }).select("+password");
+      if (!user) {
+        return next(new ErrorHandler("Wrong credentials!", 401));
+      }
+      const isPasswordMatched = await user.comparePassword(password);
+      //console.log("checked");
+      if (!isPasswordMatched) {
+        return next(new ErrorHandler("Wrong credentials!", 401));
+      }
+      sendToken(res, user, 200, "Login Success");
+    } else {
+      //console.log(user);
+      user = await User.findOne({ email: userDetail }).select("+password");
+      if (!user) {
+        return next(new ErrorHandler("Wrong credentials!", 401));
+      }
+      const isPasswordMatched = await user.comparePassword(password);
+      //console.log("checked");
+      if (!isPasswordMatched) {
+        return next(new ErrorHandler("Wrong credentials!", 401));
+      }
 
-//       sendToken(user, 200, res);
-//     }
-//   } catch (error) {
-//     res.json({ success: false, message: error.message });
-//   }
-// };
-// verify otp
+      sendToken(res, user, 200, "Login Success");
+    }
+  } catch (error) {
+    res.json({ success: false, message: error.message });
+  }
+};
+// Logout User
+exports.logout = catchAsyncErrors(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
 
-// exports.verifyOtp = async (req, res, next) => {
-//   try {
-//     const { otp } = req.body;
-//     if (!otp) {
-//       return res
-//         .status(400)
-//         .json({ success: false, message: "Please Enter otp!" });
-//     }
-
-//     const user = await User.findOne({
-//       otp,
-//       otpExpire: { $gt: Date.now() },
-//     });
-
-//     if (!user) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "OTP is invalid or has been expired!",
-//       });
-//     }
-
-//     user.otp = "";
-//     user.otpExpire = "";
-//     await user.save();
-
-//     sendToken(user, 200, res);
-//   } catch (error) {
-//     res.json({ success: false, message: error.message });
-//   }
-// };
-
-// // Resend otp
-// exports.resendOtp = async (req, res, next) => {
-//   console.log("Jai ho");
-//   res.json({ success: true, message: "Route Working fine!" });
-// };
-
-// // forgot password
-
-// exports.forgotPassword = async (req, res, next) => {
-//   const { userDetail } = req.body;
-
-//   if (!userDetail) {
-//     return res.json({ success: false, message: "Email/phone is required!" });
-//   }
-
-//   try {
-//     let user = await User.findOne({ email: userDetail });
-
-//     if (!user) {
-//       user = await User.findOne({ mobile: userDetail });
-//     }
-
-//     // generate otp
-//     user.generateOtp();
-//     await user.save({ validateBeforeSave: false });
-
-//     sendOtp(user.otp, user.mobile, "OTP sent please verify");
-//   } catch (error) {
-//     res.json({ success: false, message: error.message });
-//   }
-// };
-
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully",
+  });
+});
 // // reset password
 // exports.resetPassword = async (req, res, next) => {
 //   const { otp, newpassword, confirmPassword } = req.body;
