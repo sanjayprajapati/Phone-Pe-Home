@@ -5,6 +5,9 @@ const sendOtp = require("../utils/sendOtp");
 const sendEmail = require("../utils/sendMail");
 const catchAsyncErrors = require("../middlewares/catchAsyncErrors");
 const otpGenerator = require("otp-generator");
+const VerificationOtpToken = require("../models/VerificationOtpToken");
+const sendVerificationToken = require("../utils/sendVerificationToken");
+const { isValidObjectId } = require("mongoose");
 
 // User Registration
 exports.userRegister = catchAsyncErrors(async (req, res, next) => {
@@ -15,9 +18,7 @@ exports.userRegister = catchAsyncErrors(async (req, res, next) => {
   if (user) {
     return next(new ErrorHandler("User already exists", 400));
   }
-
-  user = await User.findOne({ mobile });
-
+  user = await User.findOne({ email });
   if (user) {
     return next(
       new ErrorHandler(
@@ -27,24 +28,27 @@ exports.userRegister = catchAsyncErrors(async (req, res, next) => {
     );
   }
 
+  user = await User.create({
+    name,
+    email,
+    mobile,
+    password,
+  });
   const otp = otpGenerator.generate(6, {
     upperCaseAlphabets: false,
     lowerCaseAlphabets: false,
     specialChars: false,
   });
   console.log(otp);
-  const otpExpire = new Date(Date.now() + process.env.OTP_EXPIRE * 60 * 1000);
-
-  user = await User.create({
-    name,
-    email,
-    mobile,
-    password,
-    otp,
-    otpExpire,
+  const verificationOtpToken = new VerificationOtpToken({
+    owner: user._id,
+    token: otp,
   });
 
-  //sendOtp(otp, user.otp, "OTP sent please verify!");
+  await verificationOtpToken.save();
+  await user.save();
+  console.log(verificationOtpToken);
+
   await sendEmail({
     email,
     subject: `Verify your account`,
@@ -53,27 +57,49 @@ exports.userRegister = catchAsyncErrors(async (req, res, next) => {
 
   await sendOtp(otp, mobile);
 
-  res.status(201).json({
-    success: true,
-    message: "OTP sent to your email & phone, please verify your account",
-  });
+  sendVerificationToken(
+    res,
+    user,
+    201,
+    "Verification code sent to your email and mobile"
+  );
 });
 
 exports.verifyOtp = async (req, res) => {
   try {
-    const otp = Number(req.body.otp);
+    const { token } = req.body;
+    const userId = req.user._id;
 
-    const user = await User.findOne({ otp, otpExpire: { $gt: Date.now() } });
+    const user = await User.findById(req.user._id);
 
     if (!user) {
       return res
-        .status(400)
+        .status(401)
         .json({ success: false, message: "Invalid OTP or has been Expired" });
+    }
+    if (user.verified) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Account already verified" });
+    }
+
+    const verifytoken = await VerificationOtpToken.findOne({ owner: user._id });
+
+    if (!verifytoken) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid otp or has been expired" });
+    }
+
+    const isMatched = await verifytoken.compareToken(token);
+
+    if (!isMatched) {
+      return res.status(401).json({ success: false, message: "Wrong OTP" });
     }
 
     user.verified = true;
-    user.otp = null;
-    user.otp_expiry = null;
+
+    await VerificationOtpToken.findByIdAndDelete(verifytoken._id);
 
     await user.save();
 
@@ -133,6 +159,16 @@ exports.logout = catchAsyncErrors(async (req, res, next) => {
   res.status(200).json({
     success: true,
     message: "Logged out successfully",
+  });
+});
+
+// Get User Detail
+exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+
+  res.status(200).json({
+    success: true,
+    user,
   });
 });
 // // reset password

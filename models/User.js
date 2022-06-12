@@ -50,10 +50,7 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  otp: {
-    type: Number,
-  },
-  otpExpire: Date,
+  verifyExpire: Date,
   resetPasswordOtp: Number,
   resetPasswordOtpExpire: Date,
 });
@@ -68,7 +65,14 @@ UserSchema.pre("save", async function (next) {
 // JWT TOKEN
 UserSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+    expiresIn: process.env.JWT_EXPIRE * 24 * 60 * 60 * 1000,
+  });
+};
+
+// User Verify token
+UserSchema.methods.getUserVerificationToken = function () {
+  return jwt.sign({ id: this._id }, process.env.JWT_VERIFICATION_SECRET, {
+    expiresIn: process.env.JWT_VERIFICATION_EXPIRE * 60 * 1000,
   });
 };
 
@@ -89,6 +93,6 @@ UserSchema.methods.getResetPasswordOtp = function () {
 };
 
 // Deleting user if not verified
-UserSchema.index({ otpExpire: 1 }, { expireAfterSeconds: 0 });
+//UserSchema.index({ otpExpire: 1 }, { expireAfterSeconds: 0 });
 
 module.exports = mongoose.model("User", UserSchema);

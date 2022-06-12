@@ -17,6 +17,23 @@ exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
   next();
 });
 
+exports.checkVerification = catchAsyncErrors(async (req, res, next) => {
+  const { verifyUserToken } = req.cookies;
+
+  if (!verifyUserToken) {
+    return next(new ErrorHandler("Somethin went wrong", 401));
+  }
+
+  const decodedData = jwt.verify(
+    verifyUserToken,
+    process.env.JWT_VERIFICATION_SECRET
+  );
+
+  req.user = await User.findById(decodedData.id);
+
+  next();
+});
+
 exports.authorizeRoles = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
