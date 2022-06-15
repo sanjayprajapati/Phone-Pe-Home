@@ -18,7 +18,7 @@ exports.userRegister = catchAsyncErrors(async (req, res, next) => {
   if (user) {
     return next(new ErrorHandler("User already exists", 400));
   }
-  user = await User.findOne({ email });
+  user = await User.findOne({ mobile });
   if (user) {
     return next(
       new ErrorHandler(
@@ -67,15 +67,25 @@ exports.userRegister = catchAsyncErrors(async (req, res, next) => {
 
 exports.verifyOtp = async (req, res) => {
   try {
-    const { token } = req.body;
-    const userId = req.user._id;
+    const { userId, token } = req.body;
 
-    const user = await User.findById(req.user._id);
+    if (!userId.trim() || !token.trim()) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Request, missing parameters!",
+      });
+    }
+    if (!isValidObjectId(userId)) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid user id!" });
+    }
+    const user = await User.findById(userId);
 
     if (!user) {
       return res
         .status(401)
-        .json({ success: false, message: "Invalid OTP or has been Expired" });
+        .json({ success: false, message: "Sorry user not found!" });
     }
     if (user.verified) {
       return res
@@ -112,16 +122,16 @@ exports.verifyOtp = async (req, res) => {
 
 exports.userLogin = async (req, res, next) => {
   try {
-    const { userDetail, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!userDetail || !password) {
+    if (!username || !password) {
       return next(new ErrorHandler("Both fields are required!", 400));
     }
 
-    let user = await User.findOne({ email: userDetail });
+    let user = await User.findOne({ email: username });
 
     if (!user) {
-      user = await User.findOne({ mobile: userDetail }).select("+password");
+      user = await User.findOne({ mobile: username }).select("+password");
       if (!user) {
         return next(new ErrorHandler("Wrong credentials!", 401));
       }
@@ -130,12 +140,18 @@ exports.userLogin = async (req, res, next) => {
       if (!isPasswordMatched) {
         return next(new ErrorHandler("Wrong credentials!", 401));
       }
+      if (!user.verified) {
+        return next(new ErrorHandler("User Not Verfied", 401));
+      }
       sendToken(res, user, 200, "Login Success");
     } else {
       //console.log(user);
-      user = await User.findOne({ email: userDetail }).select("+password");
+      user = await User.findOne({ email: username }).select("+password");
       if (!user) {
         return next(new ErrorHandler("Wrong credentials!", 401));
+      }
+      if (!user.verified) {
+        return next(new ErrorHandler("User Not Verfied", 401));
       }
       const isPasswordMatched = await user.comparePassword(password);
       //console.log("checked");
@@ -171,34 +187,119 @@ exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
     user,
   });
 });
-// // reset password
-// exports.resetPassword = async (req, res, next) => {
-//   const { otp, newpassword, confirmPassword } = req.body;
+// Forgot Password
+exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
+  const { username } = req.body;
+  if (!username) {
+    return next(new ErrorHandler("User not found", 400));
+  }
 
-//   try {
-//     const user = await User.findOne({
-//       otp,
-//       otpExpire: { $gt: Date.now() },
-//     });
+  let user = await User.findOne({ email: username });
 
-//     if (!user) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "OTP is invalid or has been expired!",
-//       });
-//     }
+  if (!user) {
+    user = await User.findOne({ mobile: username });
+    if (!user) {
+      return next(new ErrorHandler("User not found", 401));
+    }
+    if (!user.verified) {
+      return next(new ErrorHandler("User Not Verfied", 401));
+    }
+    let otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
 
-//     if (newpassword !== confirmPassword) {
-//       return res.json({ success: false, message: "Password does not match!" });
-//     }
+    let verificationOtpToken = new VerificationOtpToken({
+      owner: user._id,
+      token: otp,
+    });
 
-//     user.password = newpassword;
-//     user.otp = undefined;
-//     user.otpExpire = undefined;
+    await verificationOtpToken.save();
+    sendOtp(otp, user.mobile);
 
-//     await user.save();
-//     res.json({ success: true, message: "Password updated successfuly!" });
-//   } catch (error) {
-//     res.json({ success: false, message: error.message });
-//   }
-// };
+    res.status(200).json({
+      success: true,
+      message: "Otp sent to your phone",
+      user,
+    });
+  } else {
+    //console.log(user);
+    user = await User.findOne({ email: username });
+    if (!user) {
+      return next(new ErrorHandler("User Not found", 401));
+    }
+    if (!user.verified) {
+      return next(new ErrorHandler("User Not Verfied", 401));
+    }
+    let otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    let verificationOtpToken = new VerificationOtpToken({
+      owner: user._id,
+      token: otp,
+    });
+
+    await verificationOtpToken.save();
+
+    await sendEmail({
+      email: user.email,
+      subject: `Reset Password OTP`,
+      message: `Your Reset Password OTP is ${otp}`,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "OTP sent to you email",
+      user,
+    });
+  }
+});
+
+// Reset Password
+exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
+  const { userId, token, newPassword, confirmPassword } = req.body;
+
+  if (!userId || !token || !newPassword || !confirmPassword) {
+    return next(new ErrorHandler("Invalid Request, missing parameters!", 401));
+  }
+  if (req.body.newPassword !== req.body.confirmPassword) {
+    return next(new ErrorHandler("Password does not password", 401));
+  }
+  if (!isValidObjectId(userId)) {
+    return next(new ErrorHandler("Invalid user id!", 401));
+  }
+  const user = await User.findById(userId);
+
+  if (!user) {
+    return next(new ErrorHandler("Sorry user not found!", 401));
+  }
+  if (!user.verified) {
+    return next(new ErrorHandler("User Not Verfied", 401));
+  }
+
+  const verifytoken = await VerificationOtpToken.findOne({ owner: user._id });
+
+  if (!verifytoken) {
+    return next(new ErrorHandler("Invalid otp or has been expired", 401));
+  }
+
+  const isMatched = await verifytoken.compareToken(token);
+
+  if (!isMatched) {
+    return next(new ErrorHandler("Wrong OTP", 401));
+  }
+
+  user.password = newPassword;
+
+  await VerificationOtpToken.findByIdAndDelete(verifytoken._id);
+
+  await user.save();
+
+  res
+    .status(200)
+    .json({ success: true, message: "Password reset fuccessfully" });
+});
