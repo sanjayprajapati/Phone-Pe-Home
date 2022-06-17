@@ -11,19 +11,21 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CircleLoader from './CircleLoader';
 
-const Boxes = ({children, deviceName, roomName}) => {
+const Boxes = ({
+  children,
+  deviceName,
+  roomName,
+  changeState,
+  deviceStateValue,
+  isLadding,
+  ...rest
+}) => {
   const [deviceStatus, setDeviceStatus] = useState('off');
 
-  const handleEvent = () => {
-    setTimeout(() => {
-      setDeviceStatus('on');
-    }, 1000);
-    setDeviceStatus('off');
-  };
   return (
     <View style={styles.container}>
-      {deviceStatus === 'on' ? <CircleLoader /> : null}
-      {deviceStatus === 'on' ? (
+      {isLadding ? <CircleLoader /> : null}
+      {deviceStateValue === 'on' ? (
         <MaterialCommunityIcons size={40} color="#f1c919" name="lightbulb-on" />
       ) : (
         <MaterialCommunityIcons size={40} color="#81848d" name="lightbulb" />
@@ -31,11 +33,11 @@ const Boxes = ({children, deviceName, roomName}) => {
 
       <Text style={styles.headding}>{deviceName}</Text>
       <View style={styles.switchWrapper}>
-        <TouchableOpacity onPress={handleEvent}>
-          {deviceStatus === 'off' ? (
+        <TouchableOpacity onPress={changeState}>
+          {deviceStateValue === 'on' ? (
             <AntDesign size={40} color="#ff0000" name="poweroff" />
           ) : (
-            <AntDesign size={40} color="#eee" name="poweroff" />
+            <AntDesign size={40} color="#5b96d8" name="poweroff" />
           )}
         </TouchableOpacity>
       </View>

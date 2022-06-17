@@ -1,3 +1,3 @@
-const lightBlue = {
-  color: '#1d50ea',
+const colorCodes = {
+  lightBlue: '#5b96d8',
 };

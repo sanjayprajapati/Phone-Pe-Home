@@ -14,9 +14,27 @@ import MainLayourt from '../Layouts/MainLayout';
 
 const Home = () => {
   const dispatch = useDispatch();
+  const [deviceState, SetDeviceState] = useState('off');
+  const [isLadding, setIsloadding] = useState(false);
 
   const logoutUser = ({children}) => {
     dispatch(logout());
+  };
+
+  const handleDeviceState = () => {
+    setIsloadding(true);
+    console.log('inprogress');
+    setTimeout(() => {
+      if (deviceState === 'on') {
+        SetDeviceState('off');
+        console.log('Device: off');
+        setIsloadding(false);
+        return;
+      }
+      SetDeviceState('on');
+      setIsloadding(false);
+      console.log('Device: off');
+    }, 500);
   };
 
   useEffect(() => {}, [dispatch]);
@@ -24,10 +42,13 @@ const Home = () => {
   return (
     <MainLayourt title="Home">
       <View style={styles.container}>
-        <Boxes roomName="Living Room" deviceName="Light Bulb" />
-        <Boxes roomName="Guest Room" deviceName="Fan" />
-        <Boxes roomName="Bath Room" deviceName="Geaser" />
-        <Boxes roomName="Master Bedroom" deviceName="AC" />
+        <Boxes
+          roomName="Living Room"
+          deviceName="Light Bulb"
+          changeState={handleDeviceState}
+          deviceStateValue={deviceState}
+          isLadding={isLadding}
+        />
       </View>
     </MainLayourt>
   );
