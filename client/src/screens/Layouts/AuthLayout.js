@@ -11,7 +11,7 @@ import {Dimensions} from 'react-native';
 
 const AuthLayout = ({children}) => {
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView>
       <SafeAreaView>
         <ScrollView
           showsVerticalScrollIndicator={false}

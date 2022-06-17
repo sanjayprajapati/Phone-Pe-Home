@@ -18,24 +18,26 @@ const TabRoutes = () => {
       tabBar={tabsProps => <BottomTabBar {...tabsProps} />}
       initialRouteName="Home"
       screenOptions={({route}) => ({
-        tabBarActiveTintColor: '#F88440',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#5b96d8',
+        tabBarInactiveTintColor: '#81848d',
         tabBarStyle: {
-          backgroundColor: '#ffffff',
+          backgroundColor: '#181b2c',
           height: 60,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+          borderTopWidth: 0,
           left: 0,
           right: 0,
           paddingBottom: 10,
-          position: 'absolute',
+          borderWidth: 0,
+          borderColor: '#181b2c',
         },
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home';
-            color = focused ? '#F88440' : 'gray';
+            color = focused ? '#5b96d8' : '#81848d';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'user' : 'user';
           } else if (route.name === 'Settings') {
@@ -48,10 +50,26 @@ const TabRoutes = () => {
           return <FontAwesome name={iconName} size={size} color={color} />;
         },
       })}>
-      <BottomTab.Screen name="Home" component={Home} />
-      <BottomTab.Screen name="Devices" component={Devices} />
-      <BottomTab.Screen name="Profile" component={Profile} />
-      <BottomTab.Screen name="Settings" component={Settings} />
+      <BottomTab.Screen
+        name="Home"
+        component={Home}
+        options={{header: () => null}}
+      />
+      <BottomTab.Screen
+        name="Devices"
+        component={Devices}
+        options={{header: () => null}}
+      />
+      <BottomTab.Screen
+        name="Profile"
+        component={Profile}
+        options={{header: () => null}}
+      />
+      <BottomTab.Screen
+        name="Settings"
+        component={Settings}
+        options={{header: () => null}}
+      />
     </BottomTab.Navigator>
   );
 };
