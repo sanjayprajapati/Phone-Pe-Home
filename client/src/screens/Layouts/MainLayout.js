@@ -12,7 +12,7 @@ import {Dimensions} from 'react-native';
 import Header from '../../components/Header';
 const STYLES = ['default', 'dark-content', 'light-content'];
 
-const MainLayourt = ({children, title}) => {
+const MainLayout = ({children, title}) => {
   const [statusBarStyle, setStatusBarStyle] = useState(STYLES[0]);
   return (
     <SafeAreaView style={styles.mainContainer}>
@@ -27,7 +27,7 @@ const MainLayourt = ({children, title}) => {
   );
 };
 
-export default MainLayourt;
+export default MainLayout;
 const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainContainer: {

@@ -9,15 +9,16 @@ import {
 import React, {useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import CircleLoader from './CircleLoader';
+import CircleLoader from '../CircleLoader';
 
-const Boxes = ({
+const CardDevice = ({
   children,
-  deviceName,
-  roomName,
+  devicename,
+  roomType,
   changeState,
-  deviceStateValue,
+  deviceState,
   isLadding,
+  deviceType,
   ...rest
 }) => {
   const [deviceStatus, setDeviceStatus] = useState('off');
@@ -25,28 +26,29 @@ const Boxes = ({
   return (
     <View style={styles.container}>
       {isLadding ? <CircleLoader /> : null}
-      {deviceStateValue === 'on' ? (
+
+      {deviceState === 'ON' ? (
         <MaterialCommunityIcons size={40} color="#f1c919" name="lightbulb-on" />
       ) : (
         <MaterialCommunityIcons size={40} color="#81848d" name="lightbulb" />
       )}
 
-      <Text style={styles.headding}>{deviceName}</Text>
+      <Text style={styles.headding}>{devicename}</Text>
       <View style={styles.switchWrapper}>
         <TouchableOpacity onPress={changeState}>
-          {deviceStateValue === 'on' ? (
+          {deviceState === 'ON' ? (
             <AntDesign size={40} color="#ff0000" name="poweroff" />
           ) : (
             <AntDesign size={40} color="#5b96d8" name="poweroff" />
           )}
         </TouchableOpacity>
       </View>
-      <Text style={styles.bottomText}>{roomName}</Text>
+      <Text style={styles.bottomText}>{roomType}</Text>
     </View>
   );
 };
 
-export default Boxes;
+export default CardDevice;
 
 const {height, width} = Dimensions.get('window');
 

@@ -3,15 +3,16 @@ import {
   GET_ALL_DEVICES_SUCCESS,
   GET_ALL_DEVICES_FAIL,
 } from '../constants/deviceConstans';
+import {getDevices} from '../../utils/devices';
 
-export const getAllDevices = data => async dispatch => {
+export const getAllDevices = () => async dispatch => {
   try {
     dispatch({type: GET_ALL_DEVICES_RQUEQUEST});
     //console.log(data.token);
-    await setAuthAsyncStorage(data);
+    const data = await getDevices();
     dispatch({type: GET_ALL_DEVICES_SUCCESS, payload: data});
   } catch (error) {
     console.log(error);
-    dispatch({type: GET_ALL_DEVICES_FAIL, payload: error.response.message});
+    dispatch({type: GET_ALL_DEVICES_FAIL, payload: 'Unknown Error'});
   }
 };

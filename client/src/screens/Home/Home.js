@@ -5,52 +5,58 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  ScrollView,
 } from 'react-native';
-import {useDispatch} from 'react-redux';
-import Boxes from '../../components/Boxes';
+import {useDispatch, useSelector} from 'react-redux';
+import ListDevices from '../../components/devices/ListDevices';
 import Header from '../../components/Header';
 import {logout} from '../../redux/actions/authAction';
-import MainLayourt from '../Layouts/MainLayout';
+import MainLayout from '../Layouts/MainLayout';
+import CardDevice from '../../components/devices/CardDevice';
+import {getAllDevices} from '../../redux/actions/deviceAction';
 
 const Home = () => {
   const dispatch = useDispatch();
-  const [deviceState, SetDeviceState] = useState('off');
-  const [isLadding, setIsloadding] = useState(false);
 
-  const logoutUser = ({children}) => {
+  const logoutUser = () => {
     dispatch(logout());
   };
 
-  const handleDeviceState = () => {
-    setIsloadding(true);
-    console.log('inprogress');
-    setTimeout(() => {
-      if (deviceState === 'on') {
-        SetDeviceState('off');
-        console.log('Device: off');
-        setIsloadding(false);
-        return;
-      }
-      SetDeviceState('on');
-      setIsloadding(false);
-      console.log('Device: off');
-    }, 500);
-  };
+  const {loading, devices} = useSelector(state => state.devices);
+  const [item, setItem] = useState(null);
 
-  useEffect(() => {}, [dispatch]);
+  useEffect(() => {
+    dispatch(getAllDevices());
+    setItem(false);
+    console.log(loading);
+  }, []);
 
   return (
-    <MainLayourt title="Home">
+    <MainLayout title="Home">
       <View style={styles.container}>
-        <Boxes
-          roomName="Living Room"
-          deviceName="Light Bulb"
-          changeState={handleDeviceState}
-          deviceStateValue={deviceState}
-          isLadding={isLadding}
-        />
+        <View style={styles.deviceContainer}>
+          <Text style={styles.mainHeading}>My Devices</Text>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.contentContainer}>
+            <View style={styles.container}>
+              {devices &&
+                devices.map(elem => (
+                  <CardDevice
+                    key={elem._id}
+                    data={elem}
+                    devicename={elem.name}
+                    roomType={elem.roomType}
+                    deviceState={elem.state}
+                    deviceType={elem.deviceType}
+                    changeState={() => handleDeviceState(elem._id)}
+                  />
+                ))}
+            </View>
+          </ScrollView>
+        </View>
       </View>
-    </MainLayourt>
+    </MainLayout>
   );
 };
 
@@ -59,9 +65,20 @@ export default Home;
 const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  container: {
+  deviceContainer: {
     padding: 10,
+    height: height - 150,
+  },
+  contentContainer: {
+    paddingVertical: 0,
+  },
+  container: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
+  mainHeading: {
+    fontSize: 26,
+    color: '#5b96d8',
   },
 });

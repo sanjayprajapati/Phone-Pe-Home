@@ -2,13 +2,12 @@ import {
   GET_ALL_DEVICES_RQUEQUEST,
   GET_ALL_DEVICES_SUCCESS,
   GET_ALL_DEVICES_FAIL,
+  CLEAR_ERRORS,
 } from '../constants/deviceConstans';
 
-export const userReducer = (state = {devices: []}, action) => {
+export const deviceReducer = (state = {devices: []}, action) => {
   switch (action.type) {
     case GET_ALL_DEVICES_RQUEQUEST:
-
-    case LOAD_USER_REQUEST:
       return {
         loading: true,
         devices: [],
