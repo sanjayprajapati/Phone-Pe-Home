@@ -10,10 +10,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // importing routes
+const admin = require('./routes/adminRoutes')
 const user = require("./routes/userRoutes");
 
-// Adding to Routes
-
+app.use("/api/v1", admin);
 app.use("/api/v1", user);
 app.get("*", (req, res) => {
     res.send("Server is working");
