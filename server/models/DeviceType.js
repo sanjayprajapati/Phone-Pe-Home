@@ -3,11 +3,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const AddDeviceSchema = new mongoose.Schema({
-  mapdevice: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "AdminDevice",
-    required: true,
+const DeviceTypeSchema = new mongoose.Schema({
+  deviceType: {
+    type: String,
+    required: [true,"Please Enter Device Type"],
   },
   createdAt: {
     type: Date,
@@ -16,8 +15,8 @@ const AddDeviceSchema = new mongoose.Schema({
 });
 
 // Generating Device ID
-AddDeviceSchema.methods.getDeviceId = function () {
+DeviceTypeSchema.methods.getDeviceId = function () {
   // Generating ID
 };
 
-module.exports = mongoose.model("AddDevice", AddDeviceSchema);
+module.exports = mongoose.model("DeviceType", DeviceTypeSchema);
