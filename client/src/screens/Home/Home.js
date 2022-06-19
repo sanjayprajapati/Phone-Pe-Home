@@ -30,6 +30,25 @@ const Home = () => {
     setItem(false);
     console.log(loading);
   }, []);
+  const handleDeviceState = id => {
+    let newItem = item.find(index => {
+      return index._id === id;
+    });
+    console.log(newItem);
+    setItem(
+      item.map(elem => {
+        if (elem._id === newItem._id) {
+          if (newItem.state === 'ON') {
+            return {...elem, state: 'OFF'};
+          } else {
+            return {...elem, state: 'ON'};
+          }
+        }
+        return elem;
+      }),
+    );
+    console.log(item);
+  };
 
   return (
     <MainLayout title="Home">
