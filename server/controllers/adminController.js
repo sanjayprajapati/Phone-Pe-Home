@@ -71,16 +71,16 @@ exports.createDeviceId = async (req, res, next) => {
 };
 
 exports.createRoomType = catchAsyncErrors(async (req, res, next) => {
-  const { roomnames } = req.body;
+  const { roomtype } = req.body;
 
-  if (!roomnames) {
-    return next(new ErrorHandler("Please Enter Room Name", 401));
+  if (!roomtype) {
+    return next(new ErrorHandler("Please Enter Room Type", 401));
   }
 
-  const roomtype = await RoomType.create({
-    rooms: roomnames,
+  const roomType = await RoomType.create({
+    roomtype,
   });
-  await roomtype.save();
+  await roomType.save();
 
   res.status(201).json({ success: true, message: "Rooms Type Created" });
 });

@@ -9,6 +9,11 @@ const VerificationOtpToken = require("../models/VerificationOtpToken");
 const sendVerificationToken = require("../utils/sendVerificationToken");
 const { isValidObjectId } = require("mongoose");
 const UserAccommodation = require("../models/UserAccommodation");
+const UserDefaultHome = require("../models/UserDefaultHome");
+const UserRoom = require("../models/UserRoom");
+const RoomType = require("../models/RoomType");
+const DeviceId = require("../models/DeviceId");
+const DeviceType = require("../models/DeviceType");
 
 // User Registration
 exports.userRegister = catchAsyncErrors(async (req, res, next) => {
@@ -114,10 +119,10 @@ exports.verifyOtp = async (req, res) => {
 
     await user.save();
 
-    const useraccommodation = await UserAccommodation.create({
+    const userdefaulthome = await UserDefaultHome.create({
       userId: user._id,
     });
-    await useraccommodation.save();
+    await userdefaulthome.save();
 
     sendToken(res, user, 200, "Account Verified");
   } catch (error) {
@@ -308,4 +313,123 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   res
     .status(200)
     .json({ success: true, message: "Password reset fuccessfully" });
+});
+
+// create Home
+exports.createHome = catchAsyncErrors(async (req, res, next) => {
+  const { name, userId } = req.body;
+
+  if (!name || !userId) {
+    return next(new ErrorHandler("Feilds Required", 401));
+  }
+  let user = await User.findById(userId);
+  if (!user) {
+    return next(new ErrorHandler("User Not Found", 401));
+  }
+
+  const useraccommodation = await UserAccommodation.create({
+    name,
+    userId,
+  });
+
+  await useraccommodation.save();
+
+  res.status(201).json({ success: true, message: "Room Saved" });
+});
+
+// update home
+exports.updateHome = catchAsyncErrors(async (req, res, next) => {
+  const { name, homeId } = req.body;
+
+  if (!name || !homeId) {
+    return next(new ErrorHandler("Feilds Required", 401));
+  }
+  let useraccommodation = await UserAccommodation.findById(homeId);
+  if (!useraccommodation) {
+    return next(new ErrorHandler("Home Not Found", 401));
+  }
+
+  useraccommodation.name = name;
+
+  await useraccommodation.save();
+
+  res.status(201).json({ success: true, message: "Room Saved" });
+});
+
+// Create Room
+exports.createRoom = catchAsyncErrors(async (req, res, next) => {
+  const { roomname, userId, roomTypeId } = req.body;
+
+  if (!roomname || !userId || !roomTypeId) {
+    return next(new ErrorHandler("Feilds Required", 401));
+  }
+  let user = await User.findById(userId);
+  if (!user) {
+    return next(new ErrorHandler("User Not Found", 401));
+  }
+  let roomType = await RoomType.findById(roomTypeId);
+  if (!roomType) {
+    return next(new ErrorHandler("Room Type Not Found", 401));
+  }
+
+  const userroom = await UserRoom.create({
+    roomname,
+    userId,
+    roomTypeId,
+  });
+
+  await userroom.save();
+
+  res.status(201).json({ success: true, message: "Room Created" });
+});
+
+// update Room
+exports.updateRoom = catchAsyncErrors(async (req, res, next) => {
+  const { roomname, roomid } = req.body;
+
+  if (!roomname || !roomid) {
+    return next(new ErrorHandler("Feilds Required", 401));
+  }
+  let userroom = await UserRoom.findById(roomid);
+  if (!userroom) {
+    return next(new ErrorHandler("Room Not Found", 401));
+  }
+
+  userroom.roomname = roomname;
+
+  await userroom.save();
+
+  res.status(201).json({ success: true, message: "Room Saved" });
+});
+
+// Add Device (configure Device)
+
+exports.addDevice = catchAsyncErrors(async (req, res, next) => {
+  const { deviceId, deviceTypeId, userId } = req.body;
+
+  if (!deviceId) {
+    return next(new ErrorHandler("Please Enter Device ID", 401));
+  }
+  if (!deviceTypeId) {
+    return next(new ErrorHandler("Device type should not enpty", 401));
+  }
+  if (!userId) {
+    return next(new ErrorHandler("User Id should not enpty", 401));
+  }
+
+  // check device Id
+  let deviceid = await DeviceId.findById(deviceId);
+  if (!deviceid) {
+    return next(new ErrorHandler("Device Id Invalid", 401));
+  }
+
+  let user = await User.findById(userId);
+  if (!user) {
+    return next(new ErrorHandler("User Not Found", 401));
+  }
+  let devicetype = await DeviceType.findById(deviceTypeId);
+
+  if (!devicetype) {
+    return next(new ErrorHandler("Device Type Not Found", 401));
+  }
 });

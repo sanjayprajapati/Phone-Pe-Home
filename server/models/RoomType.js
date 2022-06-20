@@ -4,8 +4,8 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 const RoomTypeSchema = new mongoose.Schema({
-  rooms: {
-    type: [],
+  roomtype: {
+    type: String,
     required: [true, "Please Enter Room Names"],
   },
 });

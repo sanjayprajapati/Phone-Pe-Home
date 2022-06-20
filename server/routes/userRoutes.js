@@ -11,6 +11,10 @@ const {
   resendOtp,
   logout,
   getUserDetails,
+  createRoom,
+  updateRoom,
+  createHome,
+  updateHome,
 } = require("../controllers/userController");
 const {
   isAuthenticatedUser,
@@ -24,6 +28,10 @@ router.route("/user/logout").get(logout);
 router.route("/user/forget-password").post(forgotPassword);
 router.route("/user/reset-password").put(resetPassword);
 router.route("/user/me").get(isAuthenticatedUser, getUserDetails);
+router.route("/user/create-room").post(createRoom);
+router.route("/user/update-room").put(updateRoom);
+router.route("/user/create-home").post(createHome);
+router.route("/user/update-home").put(updateHome);
 
 // router.route("/resendOtp").get(resendOtp);
 // router.route("/register/veifyotp").post(verifyOtp);

@@ -3,10 +3,10 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const UserAccommodationSchema = mongoose.Schema({
+const UserDefaultHomeSchema = mongoose.Schema({
   name: {
     type: String,
-    required: true,
+    default: "Sweet Home",
   },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -15,4 +15,4 @@ const UserAccommodationSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("UserAccommodation", UserAccommodationSchema);
+module.exports = mongoose.model("UserDefaultHome", UserDefaultHomeSchema);
