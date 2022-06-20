@@ -4,22 +4,14 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 const DeviceTypeSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-  },
   name: {
     type: String,
     required: [true, "Please Enter Name of Device Type"],
   },
-  deviceType: {
+  numberOfDevice: {
     type: Number,
     required: [true, "Please Select Device Type"],
     unique: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
   },
 });
 

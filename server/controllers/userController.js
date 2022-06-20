@@ -8,6 +8,7 @@ const otpGenerator = require("otp-generator");
 const VerificationOtpToken = require("../models/VerificationOtpToken");
 const sendVerificationToken = require("../utils/sendVerificationToken");
 const { isValidObjectId } = require("mongoose");
+const UserAccommodation = require("../models/UserAccommodation");
 
 // User Registration
 exports.userRegister = catchAsyncErrors(async (req, res, next) => {
@@ -112,6 +113,11 @@ exports.verifyOtp = async (req, res) => {
     await VerificationOtpToken.findByIdAndDelete(verifytoken._id);
 
     await user.save();
+
+    const useraccommodation = await UserAccommodation.create({
+      userId: user._id,
+    });
+    await useraccommodation.save();
 
     sendToken(res, user, 200, "Account Verified");
   } catch (error) {
