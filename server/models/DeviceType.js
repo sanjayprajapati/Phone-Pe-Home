@@ -8,12 +8,23 @@ const DeviceTypeSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please Enter Name of Device Type"],
   },
-  numberOfDevice: {
-    type: Number,
-    required: [true, "Please Select Device Type"],
-    unique: true,
-  },
+  applianceType: [
+    {
+      applianceName: {
+        type: String,
+        required: true,
+      },
+      numberOfAppliance: {
+        type: Number,
+        required: [true, "Please Select Device Type"],
+      },
+    },
+  ],
 });
+DeviceTypeSchema.index(
+  { "applianceType.applianceName": 1, "applianceType.numberOfAppliance": 1 },
+  { unique: true }
+);
 
 // Generating Device ID
 DeviceTypeSchema.methods.getDeviceId = function () {

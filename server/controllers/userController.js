@@ -14,6 +14,7 @@ const UserRoom = require("../models/UserRoom");
 const RoomType = require("../models/RoomType");
 const DeviceId = require("../models/DeviceId");
 const DeviceType = require("../models/DeviceType");
+const DeviceControl = require("../models/DeviceControl");
 
 // User Registration
 exports.userRegister = catchAsyncErrors(async (req, res, next) => {
@@ -422,6 +423,9 @@ exports.addDevice = catchAsyncErrors(async (req, res, next) => {
   if (!deviceid) {
     return next(new ErrorHandler("Device Id Invalid", 401));
   }
+  if (deviceid.assigned === true) {
+    return next(new ErrorHandler("Already Assigned to an other user", 401));
+  }
 
   let user = await User.findById(userId);
   if (!user) {
@@ -432,4 +436,39 @@ exports.addDevice = catchAsyncErrors(async (req, res, next) => {
   if (!devicetype) {
     return next(new ErrorHandler("Device Type Not Found", 401));
   }
+
+  let deviceArray = [];
+  let devicelname = [
+    "One",
+    "Two",
+    "Three",
+    "Four",
+    "Five",
+    "Six",
+    "Seven",
+    "Eight",
+  ];
+  let devicefullname = "";
+  let str = devicetype.applianceType[0].applianceName;
+  let devicefname = str.charAt(0).toUpperCase() + str.slice(1);
+  let numofdevice = Number(devicetype.applianceType[0].numberOfAppliance);
+
+  console.log(numofdevice);
+
+  for (let i = 0; i < numofdevice; i++) {
+    devicefullname = devicefname + " " + devicelname[i];
+    let obj = {};
+
+    obj["name"] = devicefullname;
+    obj["deviceId"] = deviceId;
+    obj["iconType"] = str;
+
+    deviceArray.push(obj);
+  }
+  deviceid.assigned = true;
+  deviceid.assignedUser = user._id;
+  const deviceControl = await DeviceControl.insertMany(deviceArray);
+  await deviceid.save();
+
+  res.status(200).json({ success: true, deviceControl });
 });

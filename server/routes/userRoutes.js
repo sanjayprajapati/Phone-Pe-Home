@@ -15,6 +15,7 @@ const {
   updateRoom,
   createHome,
   updateHome,
+  addDevice,
 } = require("../controllers/userController");
 const {
   isAuthenticatedUser,
@@ -32,6 +33,7 @@ router.route("/user/create-room").post(createRoom);
 router.route("/user/update-room").put(updateRoom);
 router.route("/user/create-home").post(createHome);
 router.route("/user/update-home").put(updateHome);
+router.route("/user/add-device").post(addDevice);
 
 // router.route("/resendOtp").get(resendOtp);
 // router.route("/register/veifyotp").post(verifyOtp);

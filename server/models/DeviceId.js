@@ -20,6 +20,7 @@ const DeviceIdSchema = new mongoose.Schema({
   assignedUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
 });
 

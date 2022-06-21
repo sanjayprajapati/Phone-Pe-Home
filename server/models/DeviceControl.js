@@ -14,9 +14,12 @@ const DeviceControlSchema = new mongoose.Schema({
     ref: "DeviceId",
   },
   deviceState: {
-    type: Boolean,
+    type: String,
     enum: ["ON", "OFF"],
     default: "OFF",
+  },
+  iconType: {
+    type: String,
   },
   createAt: {
     type: Date,
