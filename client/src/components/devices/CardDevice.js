@@ -9,25 +9,21 @@ import {
 import React, {useState} from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import CircleLoader from '../CircleLoader';
 
 const CardDevice = ({
   children,
   devicename,
   roomType,
   changeState,
-  deviceState,
+  pawerState,
   isLadding,
+  loading,
   deviceType,
   ...rest
 }) => {
-  const [deviceStatus, setDeviceStatus] = useState('off');
-
   return (
     <View style={styles.container}>
-      {isLadding ? <CircleLoader /> : null}
-
-      {deviceState === 'ON' ? (
+      {pawerState === 'ON' ? (
         <MaterialCommunityIcons size={40} color="#f1c919" name="lightbulb-on" />
       ) : (
         <MaterialCommunityIcons size={40} color="#81848d" name="lightbulb" />
@@ -36,7 +32,7 @@ const CardDevice = ({
       <Text style={styles.headding}>{devicename}</Text>
       <View style={styles.switchWrapper}>
         <TouchableOpacity onPress={changeState}>
-          {deviceState === 'ON' ? (
+          {pawerState === 'ON' ? (
             <AntDesign size={40} color="#ff0000" name="poweroff" />
           ) : (
             <AntDesign size={40} color="#5b96d8" name="poweroff" />

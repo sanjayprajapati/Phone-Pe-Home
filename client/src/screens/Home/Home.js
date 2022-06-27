@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,9 @@ import Header from '../../components/Header';
 import {logout} from '../../redux/actions/authAction';
 import MainLayout from '../Layouts/MainLayout';
 import CardDevice from '../../components/devices/CardDevice';
-import {getAllDevices} from '../../redux/actions/deviceAction';
+import {getDevices} from '../../utils/devices';
+import CircleLoader from '../../components/CircleLoader';
+const {height, width} = Dimensions.get('window');
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -22,32 +24,45 @@ const Home = () => {
     dispatch(logout());
   };
 
-  const {loading, devices} = useSelector(state => state.devices);
-  const [item, setItem] = useState(null);
+  //const {loading, devices} = useSelector(state => state.devices);
+  //const initialState = [...devices];
+  let initialState = [];
+  const [item, setItem] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(getAllDevices());
-    setItem(false);
-    console.log(loading);
+    let data = null;
+    const getData = async () => {
+      data = await getDevices();
+      initialState = [...data];
+      setItem(initialState);
+    };
+    getData();
   }, []);
-  const handleDeviceState = id => {
-    let newItem = item.find(index => {
-      return index._id === id;
-    });
-    console.log(newItem);
-    setItem(
-      item.map(elem => {
-        if (elem._id === newItem._id) {
-          if (newItem.state === 'ON') {
-            return {...elem, state: 'OFF'};
+
+  const handleDevicePawerState = (id, index) => {
+    let newState = [...item];
+    let posi;
+
+    setLoading(true);
+    setTimeout(() => {
+      newState = item.map(obj => {
+        // 👇️ if id equals 2, update country property
+        if (obj._id === id) {
+          if (obj.pawerState === 'ON') {
+            return {...obj, pawerState: 'OFF'};
           } else {
-            return {...elem, state: 'ON'};
+            return {...obj, pawerState: 'ON'};
           }
         }
-        return elem;
-      }),
-    );
-    console.log(item);
+
+        // 👇️ otherwise return object as is
+        return obj;
+      });
+
+      setLoading(false);
+      setItem(newState);
+    }, 1000);
   };
 
   return (
@@ -59,16 +74,18 @@ const Home = () => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.contentContainer}>
             <View style={styles.container}>
-              {devices &&
-                devices.map(elem => (
+              {loading ? <CircleLoader /> : null}
+              {item &&
+                item.map((elem, index) => (
                   <CardDevice
                     key={elem._id}
                     data={elem}
                     devicename={elem.name}
                     roomType={elem.roomType}
-                    deviceState={elem.state}
+                    pawerState={elem.pawerState}
                     deviceType={elem.deviceType}
-                    changeState={() => handleDeviceState(elem._id)}
+                    loading={loading}
+                    changeState={() => handleDevicePawerState(elem._id, index)}
                   />
                 ))}
             </View>
@@ -80,8 +97,6 @@ const Home = () => {
 };
 
 export default Home;
-
-const {height, width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   deviceContainer: {
@@ -95,6 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    position: 'relative',
   },
   mainHeading: {
     fontSize: 26,
