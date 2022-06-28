@@ -6,6 +6,9 @@ import Backbutton from '../../components/Backbutton';
 import AddDevice from './AddDevice';
 import {CommonActions} from '@react-navigation/native';
 import ConfigureDevieStepOne from './ConfigureDevieStepOne';
+import ConfigureDeviceStepTwo from './ConfigureDeviceStepTwo';
+import ConfigureDeviceStepThree from './ConfigureDeviceStepThree';
+
 const Stack = createStackNavigator();
 
 const Settings = ({navigation}) => {
@@ -41,6 +44,42 @@ const Settings = ({navigation}) => {
         component={ConfigureDevieStepOne}
         options={{
           title: '1.Select Type of Device',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerLeft: () => (
+            <Backbutton goBack={previusScreen} titleInfo="Previus" />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ConfigureDeviceStepTwo"
+        component={ConfigureDeviceStepTwo}
+        options={{
+          title: '2. Register Your Device',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerLeft: () => (
+            <Backbutton goBack={previusScreen} titleInfo="Previus" />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ConfigureDeviceStepThree"
+        component={ConfigureDeviceStepThree}
+        options={{
+          title: '3. Configure Your Device',
           headerStyle: {
             backgroundColor: '#181b2c',
             height: 60,
