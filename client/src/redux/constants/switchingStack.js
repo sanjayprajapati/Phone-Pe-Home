@@ -1,0 +1,6 @@
+export const ADD_DEVICE_REQUEST = 'ADD_DEVICE_REQUEST';
+export const ADD_DEVICE_SUCCESS = 'ADD_DEVICE_SUCCESS';
+export const WELCOME = 'WELCOME';
+export const DASHBOARD = 'DASHBOARD';
+export const SETTINGS = 'SETTINGS';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';

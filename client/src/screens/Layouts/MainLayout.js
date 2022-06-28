@@ -21,7 +21,7 @@ const MainLayout = ({children, title}) => {
         backgroundColor="#181b2c"
         barStyle={statusBarStyle}
       />
-      <Header title={title} />
+
       <View style={styles.mainWrapper}>{children}</View>
     </SafeAreaView>
   );
@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#181b2c',
   },
   mainWrapper: {
-    height: height,
+    height: height - 140,
   },
 });

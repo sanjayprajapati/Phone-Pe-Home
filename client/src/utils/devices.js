@@ -9,7 +9,7 @@ const data = [
   },
   {
     _id: 2,
-    name: 'Light Bulb',
+    name: 'AC',
     roomType: 'Living Room',
     deviceType: 'light',
     pawerState: 'ON',
@@ -17,7 +17,7 @@ const data = [
   },
   {
     _id: 3,
-    name: 'Light Bulb',
+    name: 'Fan',
     roomType: 'Living Room',
     deviceType: 'light',
     pawerState: 'ON',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   BottomTabBar,
   createBottomTabNavigator,
@@ -9,10 +9,17 @@ import Settings from '../screens/Settings/Settings';
 import Devices from '../screens/Devices/Devices';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {useDispatch, useSelector} from 'react-redux';
+import {addDevice} from '../redux/actions/stackAction';
 
 const BottomTab = createBottomTabNavigator();
 
 const TabRoutes = () => {
+  const dispatch = useDispatch();
+  const {isLoading, screen} = useSelector(state => state.screen);
+  console.log(screen);
+
+  useEffect(() => {}, []);
   return (
     <BottomTab.Navigator
       tabBar={tabsProps => <BottomTabBar {...tabsProps} />}
