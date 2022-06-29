@@ -13,6 +13,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {useState, useEffect} from 'react';
 import {getDeviceType} from '../../utils/getDeviceType';
 
+import {object} from 'yup';
 import NextBtn from '../../components/NextBtn';
 const {height, width} = Dimensions.get('window');
 const StepOne = ({navigation}) => {
