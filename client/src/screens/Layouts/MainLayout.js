@@ -34,6 +34,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#181b2c',
   },
   mainWrapper: {
-    height: height - 140,
+    height: height - 80,
   },
 });
