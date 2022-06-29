@@ -36,7 +36,7 @@ const TabRoutes = ({navigation, route}) => {
           left: 0,
           right: 0,
           paddingBottom: 10,
-          borderWidth: 0,
+          borderWidth: 1,
           borderColor: '#181b2c',
         },
 

@@ -12,8 +12,7 @@ import MainLayout from '../Layouts/MainLayout';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useState, useEffect} from 'react';
 import {getDeviceType} from '../../utils/getDeviceType';
-import {async} from 'validate.js';
-import {object} from 'yup';
+
 import NextBtn from '../../components/NextBtn';
 const {height, width} = Dimensions.get('window');
 const StepOne = ({navigation}) => {
@@ -55,18 +54,20 @@ const StepOne = ({navigation}) => {
     }, 1000);
   };
   const nextStep = () => {
-    navigation.navigate('ConfigureDeviceStepTwo');
+    navigation.navigate('StepTwo');
   };
   return (
-    <MainLayout>
+    <MainLayout pageHeight={height - 80}>
       <View style={styles.container}>
         <Text style={styles.mainHeading}>Pic one of listed bilow</Text>
-        <ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scroContainer}>
           <View style={styles.selectorContainer}>
             {item &&
               item.map((item, index) => {
                 return (
-                  <Pressable
+                  <TouchableOpacity
                     style={styles.selector}
                     onPress={() => handleSelector(item._id, index)}
                     key={item._id}>
@@ -82,7 +83,7 @@ const StepOne = ({navigation}) => {
                       ]}>
                       {item.name}
                     </Text>
-                  </Pressable>
+                  </TouchableOpacity>
                 );
               })}
           </View>
@@ -97,16 +98,18 @@ export default StepOne;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    position: 'relative',
   },
+  scroContainer: {},
   mainHeading: {
     fontSize: 22,
     color: '#79c142',
     marginBottom: 20,
+    marginTop: 20,
   },
   selectorContainer: {
     flexDirection: 'row',
@@ -133,19 +136,5 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     marginTop: 20,
-  },
-  nextBtn: {
-    position: 'absolute',
-    width: '80%',
-    height: 40,
-    bottom: 0,
-    zIndex: 9999999999,
-    backgroundColor: '#272a3b',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnText: {
-    color: '#79c142',
-    fontSize: 16,
   },
 });

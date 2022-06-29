@@ -9,7 +9,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import CheckBox from '@react-native-community/checkbox';
 import {useState} from 'react';
 import NextBtn from '../../components/NextBtn';
-
+const {height, width} = Dimensions.get('window');
 const StepThree = ({navigation}) => {
   const [isSelected, setSelected] = useState(false);
   const netInfo = useNetInfo();
@@ -69,10 +69,10 @@ const StepThree = ({navigation}) => {
   };
   const nextStep = () => {
     console.log('YEs');
-    navigation.navigate('ConfigureDeviceStepFour');
+    navigation.navigate('StepFour');
   };
   return (
-    <MainLayout>
+    <MainLayout pageHeight={height - 80}>
       <View style={styles.container}>
         <Text style={styles.mainHeading}>Follow Steps Belwo</Text>
         <View style={styles.listContainer}>
@@ -94,13 +94,14 @@ const StepThree = ({navigation}) => {
 };
 
 export default StepThree;
-const {height, width} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
     alignItems: 'flex-start',
     width: width - 40,
     position: 'relative',
+    height: '100%',
   },
   mainHeading: {
     fontSize: 22,
@@ -118,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
     backgroundColor: '#272a3b',
-    width: width - 50,
+    width: width - 40,
     padding: 5,
   },
   checkbox: {

@@ -4,7 +4,8 @@ import {createStackNavigator} from '@react-navigation/stack';
 const Stack = createStackNavigator();
 
 import TabRoutes from './TabRoutes';
-import StepOne from '../screens/Settings/StepOne';
+
+import DeviceConfig from '../screens/DeviceConfig/DeviceConfig';
 
 const MainStack = () => {
   return (
@@ -15,8 +16,8 @@ const MainStack = () => {
         options={{header: () => null}}
       />
       <Stack.Screen
-        name="StepOne"
-        component={StepOne}
+        name="DeviceConfig"
+        component={DeviceConfig}
         options={{header: () => null}}
       />
     </Stack.Navigator>

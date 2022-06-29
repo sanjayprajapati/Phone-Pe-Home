@@ -1,11 +1,12 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Dimensions, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import FormInput from '../../components/FormInput';
 import {Formik} from 'formik';
 import * as yup from 'yup';
 import {getDeviceID} from '../../utils/getDeviceId';
-import SubmitButton from '../../components/SubmitButton';
+import NextBtnSubmit from '../../components/NextBtnSubmit';
+import {Fragment} from 'react';
 
 const initialValues = {
   deviceId: '',
@@ -17,7 +18,7 @@ const deviceIdSchema = yup.object().shape({
     .min(14, 'Too short')
     .required('Device ID is Missing!'),
 });
-
+const {height, width} = Dimensions.get('window');
 const StepTwo = ({navigation}) => {
   const handleDeviceID = async (values, FormikActions) => {
     const res = await getDeviceID(values);
@@ -29,32 +30,34 @@ const StepTwo = ({navigation}) => {
     } else {
       FormikActions.resetForm();
 
-      navigation.navigate('ConfigureDeviceStepThree');
+      navigation.navigate('StepThree');
       return console.log(res);
     }
   };
   return (
-    <MainLayout>
+    <MainLayout pageHeight={height - 80}>
       <Formik
         initialValues={initialValues}
         validationSchema={deviceIdSchema}
         onSubmit={handleDeviceID}>
         {({handleSubmit, values}) => {
           return (
-            <View style={styles.container}>
-              <Text style={styles.mainHeading}>Please Enter Device ID</Text>
+            <Fragment>
+              <View style={styles.container}>
+                <Text style={styles.mainHeading}>Please Enter Device ID</Text>
 
-              <FormInput
-                value={values.deviceId}
-                name="deviceId"
-                placheHolder="Device ID"
-                iconType="user"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <SubmitButton buttonTitle="Next" />
-            </View>
+                <FormInput
+                  value={values.deviceId}
+                  name="deviceId"
+                  placheHolder="Device ID"
+                  iconType="user"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+              <NextBtnSubmit buttonTitle="Next" />
+            </Fragment>
           );
         }}
       </Formik>
@@ -66,10 +69,10 @@ export default StepTwo;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: 20,
     alignItems: 'center',
     width: '100%',
-    position: 'relative',
+    height: '100%',
   },
   mainHeading: {
     fontSize: 22,

@@ -5,11 +5,6 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Backbutton from '../../components/Backbutton';
 import AddDevice from './AddDevice';
 import {CommonActions} from '@react-navigation/native';
-import StepOne from './StepOne';
-import StepTwo from './StepTwo';
-import StepThree from './StepThree';
-import StepFour from './StepFour';
-import FinalStep from './FinalStep';
 
 const Stack = createStackNavigator();
 
@@ -28,96 +23,6 @@ const Settings = ({navigation}) => {
         component={AddDevice}
         options={{
           title: 'Devices',
-          headerStyle: {
-            backgroundColor: '#181b2c',
-            height: 60,
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Backbutton goBack={previusScreen} titleInfo="Previus" />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="StepOne"
-        component={StepOne}
-        options={{
-          title: '1.Select Type of Device',
-          headerStyle: {
-            backgroundColor: '#181b2c',
-            height: 60,
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="StepTwo"
-        component={StepTwo}
-        options={{
-          title: '2. Register Your Device',
-          headerStyle: {
-            backgroundColor: '#181b2c',
-            height: 60,
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="StepThree"
-        component={StepThree}
-        options={{
-          title: '3. Connect to Device',
-          headerStyle: {
-            backgroundColor: '#181b2c',
-            height: 60,
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="StepFour"
-        component={StepFour}
-        options={{
-          title: '4. Device Configuration',
-          headerStyle: {
-            backgroundColor: '#181b2c',
-            height: 60,
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-          headerLeft: () => (
-            <Backbutton goBack={previusScreen} titleInfo="Previus" />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="FinalStep"
-        component={FinalStep}
-        options={{
-          title: '5. Name Your Device',
           headerStyle: {
             backgroundColor: '#181b2c',
             height: 60,

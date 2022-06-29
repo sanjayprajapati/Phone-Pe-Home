@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: '#181b2c',
     position: 'relative',
-    zIndex: 9999,
   },
   mainWrapper: {},
 });

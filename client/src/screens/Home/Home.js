@@ -30,7 +30,7 @@ const Home = ({navigation, route}) => {
           name="Welcome"
           component={Welcome}
           options={{
-            title: 'Welcome',
+            title: 'Sweet Home',
             headerStyle: {
               backgroundColor: '#181b2c',
               height: 60,

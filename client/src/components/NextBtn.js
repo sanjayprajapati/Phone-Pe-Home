@@ -14,10 +14,10 @@ export default NextBtn;
 const styles = StyleSheet.create({
   btnStyle: {
     width: '100%',
-    padding: 10,
+    padding: 15,
     backgroundColor: '#272a3b',
     position: 'absolute',
-    bottom: -20,
+    bottom: 0,
     zIndex: 999,
   },
   title: {

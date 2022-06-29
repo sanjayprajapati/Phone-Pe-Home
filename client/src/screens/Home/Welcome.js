@@ -11,7 +11,7 @@ const Welcome = ({navigation}) => {
     // console.log('sdfsdf');
     // let screen = 'Settings';
     // dispatch(addDevice(screen));
-    navigation.navigate('StepOne');
+    navigation.navigate('Settings', {screen: 'AddDevice'});
   };
   useEffect(() => {}, []);
   return (
