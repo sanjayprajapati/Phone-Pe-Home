@@ -11,11 +11,15 @@ import React, {useState} from 'react';
 import {Dimensions} from 'react-native';
 import Header from '../../components/Header';
 const STYLES = ['default', 'dark-content', 'light-content'];
-
-const MainLayout = ({children, title}) => {
+const {width, height} = Dimensions.get('window');
+const MainLayout = ({children, title, pageHeight}) => {
   const [statusBarStyle, setStatusBarStyle] = useState(STYLES[0]);
   return (
-    <SafeAreaView style={styles.mainContainer}>
+    <SafeAreaView
+      style={[
+        styles.mainContainer,
+        {height: pageHeight ? pageHeight : height - 140},
+      ]}>
       <StatusBar
         animated={true}
         backgroundColor="#181b2c"
@@ -28,12 +32,12 @@ const MainLayout = ({children, title}) => {
 };
 
 export default MainLayout;
-const {width, height} = Dimensions.get('window');
+
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: '#181b2c',
+    position: 'relative',
+    zIndex: 9999,
   },
-  mainWrapper: {
-    height: height - 80,
-  },
+  mainWrapper: {},
 });

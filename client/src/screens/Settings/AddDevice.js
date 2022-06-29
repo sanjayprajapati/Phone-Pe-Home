@@ -5,7 +5,7 @@ import Octicons from 'react-native-vector-icons/Octicons';
 
 const AddDevice = ({navigation}) => {
   const gotoStepOne = () => {
-    navigation.navigate('ConfigureDeviceStepOne');
+    navigation.navigate('StepOne');
   };
   return (
     <MainLayout>

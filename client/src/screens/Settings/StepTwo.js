@@ -18,7 +18,7 @@ const deviceIdSchema = yup.object().shape({
     .required('Device ID is Missing!'),
 });
 
-const ConfigureDeviceStepTwo = ({navigation}) => {
+const StepTwo = ({navigation}) => {
   const handleDeviceID = async (values, FormikActions) => {
     const res = await getDeviceID(values);
     FormikActions.setSubmitting(false);
@@ -62,7 +62,7 @@ const ConfigureDeviceStepTwo = ({navigation}) => {
   );
 };
 
-export default ConfigureDeviceStepTwo;
+export default StepTwo;
 
 const styles = StyleSheet.create({
   container: {

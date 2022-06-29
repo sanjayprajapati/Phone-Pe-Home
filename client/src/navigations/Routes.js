@@ -26,7 +26,7 @@ export default function Routes() {
     <Loader />
   ) : (
     <NavigationContainer>
-      {isAuthenticated ? <TabRoutes /> : <AuthStack />}
+      {isAuthenticated ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
 }

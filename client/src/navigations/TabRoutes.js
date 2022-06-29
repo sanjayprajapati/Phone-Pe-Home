@@ -3,6 +3,7 @@ import {
   BottomTabBar,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
 import Home from '../screens/Home/Home';
 import Profile from '../screens/Profile/Profile';
 import Settings from '../screens/Settings/Settings';
@@ -14,10 +15,9 @@ import {addDevice} from '../redux/actions/stackAction';
 
 const BottomTab = createBottomTabNavigator();
 
-const TabRoutes = () => {
+const TabRoutes = ({navigation, route}) => {
   const dispatch = useDispatch();
   const {isLoading, screen} = useSelector(state => state.screen);
-  console.log(screen);
 
   useEffect(() => {}, []);
   return (
@@ -39,6 +39,7 @@ const TabRoutes = () => {
           borderWidth: 0,
           borderColor: '#181b2c',
         },
+
         tabBarIcon: ({focused, color, size}) => {
           let iconName;
 
@@ -65,12 +66,32 @@ const TabRoutes = () => {
       <BottomTab.Screen
         name="Devices"
         component={Devices}
-        options={{header: () => null}}
+        options={{
+          title: 'Devices',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
       />
       <BottomTab.Screen
         name="Profile"
         component={Profile}
-        options={{header: () => null}}
+        options={{
+          title: 'Profile',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
       />
       <BottomTab.Screen
         name="Settings"

@@ -1,5 +1,5 @@
 import {StyleSheet, Text, View, Pressable} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import Entypo from 'react-native-vector-icons/Entypo';
 import {useDispatch} from 'react-redux';
@@ -11,8 +11,9 @@ const Welcome = ({navigation}) => {
     // console.log('sdfsdf');
     // let screen = 'Settings';
     // dispatch(addDevice(screen));
-    navigation.navigate('Settings', {screen: 'AddDevice'});
+    navigation.navigate('StepOne');
   };
+  useEffect(() => {}, []);
   return (
     <MainLayout title="Sweet Home">
       <View style={styles.container}>
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
   welocomeContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    display: 'flex',
     height: '90%',
   },
   welcomeHeading: {

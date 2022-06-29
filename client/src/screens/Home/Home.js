@@ -16,12 +16,10 @@ const {height, width} = Dimensions.get('window');
 
 const Stack = createStackNavigator();
 
-const Home = () => {
+const Home = ({navigation, route}) => {
   const [hasDevice, setHasDevice] = useState(false);
 
   //const {loading, devices} = useSelector(state => state.devices);
-  //const initialState = [...devices];
-  let initialState = [];
 
   useEffect(() => {}, []);
 
@@ -31,7 +29,17 @@ const Home = () => {
         <Stack.Screen
           name="Welcome"
           component={Welcome}
-          options={{header: () => null}}
+          options={{
+            title: 'Welcome',
+            headerStyle: {
+              backgroundColor: '#181b2c',
+              height: 60,
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
         />
       ) : (
         <Stack.Screen

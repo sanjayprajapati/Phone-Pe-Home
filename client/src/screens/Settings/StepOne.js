@@ -14,8 +14,9 @@ import {useState, useEffect} from 'react';
 import {getDeviceType} from '../../utils/getDeviceType';
 import {async} from 'validate.js';
 import {object} from 'yup';
-
-const ConfigureDevieStepOne = ({navigation}) => {
+import NextBtn from '../../components/NextBtn';
+const {height, width} = Dimensions.get('window');
+const StepOne = ({navigation}) => {
   let initialState = [];
   const [item, setItem] = useState([]);
   useEffect(() => {
@@ -86,22 +87,20 @@ const ConfigureDevieStepOne = ({navigation}) => {
               })}
           </View>
         </ScrollView>
-        <Pressable style={styles.nextBtn} onPress={nextStep}>
-          <Text style={styles.btnText}>Next</Text>
-        </Pressable>
       </View>
+      <NextBtn action={nextStep} title="Next" />
     </MainLayout>
   );
 };
 
-export default ConfigureDevieStepOne;
-const {height, width} = Dimensions.get('window');
+export default StepOne;
+
 const styles = StyleSheet.create({
   container: {
     padding: 10,
     alignItems: 'center',
     width: '100%',
-    height: height - 140,
+    height: '100%',
     position: 'relative',
   },
   mainHeading: {
