@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#272a3b',
     position: 'absolute',
     bottom: 0,
-    zIndex: 999,
+    zIndex: 1,
   },
   title: {
     color: '#79c142',

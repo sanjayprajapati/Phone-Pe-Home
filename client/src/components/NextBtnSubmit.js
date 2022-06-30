@@ -15,8 +15,7 @@ const NextBtnSubmit = ({buttonTitle, ...rest}) => {
       style={styles.btnStyle}
       onPress={isSubmitting ? null : handleSubmit}
       {...rest}
-      activeOpacity={0.7}
-      disabled={true}>
+      activeOpacity={0.7}>
       <Text style={styles.title}>{buttonTitle}</Text>
     </TouchableOpacity>
   );
@@ -31,7 +30,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#272a3b',
     position: 'absolute',
     bottom: 0,
-    zIndex: 999,
+    zIndex: 9,
   },
   title: {
     color: '#79c142',

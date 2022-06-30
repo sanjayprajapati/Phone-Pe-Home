@@ -16,6 +16,8 @@ import NextBtnSubmit from '../../components/NextBtnSubmit';
 import {Fragment} from 'react';
 import Input from '../../components/Input';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import InnerLoader from '../../components/InnerLoader';
+import {useState} from 'react';
 
 const initialValues = {
   deviceId: '',
@@ -28,25 +30,32 @@ const deviceIdSchema = yup.object().shape({
     .required('Device ID is Missing!'),
 });
 const {height, width} = Dimensions.get('window');
+
 const StepTwo = ({navigation}) => {
+  const [isLoading, setIsLoading] = useState(false);
   const handleDeviceID = async (values, FormikActions) => {
     Keyboard.dismiss();
+    setIsLoading(true);
+
     const res = await getDeviceID(values);
     FormikActions.setSubmitting(false);
     console.log(res);
     if (!res) {
       console.log('succes false', res);
+      setIsLoading(false);
       return;
     } else {
       FormikActions.resetForm();
-
+      setIsLoading(false);
       navigation.navigate('StepThree');
       return console.log(res);
     }
   };
+  console.log('>>>', isLoading);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <MainLayout pageHeight={height - 80}>
+        {isLoading ? <InnerLoader /> : null}
         <Formik
           initialValues={initialValues}
           validationSchema={deviceIdSchema}
