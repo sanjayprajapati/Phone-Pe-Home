@@ -19,6 +19,7 @@ import Input from '../../components/Input';
 import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import InnerLoader from '../../components/InnerLoader';
 import {useState} from 'react';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const initialValues = {
   deviceId: '',
@@ -29,6 +30,7 @@ const createDeviceSchema = yup.object().shape({
     .trim()
     .min(14, 'Too short')
     .required('Device ID is Missing!'),
+  roomsId: yup.string().trim().required('Room Type is Missing!'),
 });
 const {height, width} = Dimensions.get('window');
 
@@ -69,23 +71,7 @@ const FinalStep = ({navigation}) => {
               <Fragment>
                 <View style={styles.container}>
                   <Text style={styles.labels}>Select Room To Assign</Text>
-                  <SelectDropdown
-                    dropdownStyle={styles.selectbox}
-                    data={countries}
-                    onSelect={(selectedItem, index) => {
-                      console.log(selectedItem, index);
-                    }}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                      // text represented after item is selected
-                      // if data array is an array of objects then return selectedItem.property to render after item is selected
-                      return selectedItem;
-                    }}
-                    rowTextForSelection={(item, index) => {
-                      // text represented for each item in dropdown
-                      // if data array is an array of objects then return item.property to represent item in dropdown
-                      return item;
-                    }}
-                  />
+
                   <Text style={styles.labels}>Name Your Room</Text>
                   <Input
                     value={values.deviceId}
@@ -96,6 +82,19 @@ const FinalStep = ({navigation}) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
+                  <View style={styles.selectInputBox}>
+                    <View style={styles.selectInputRow}>
+                      <Text style={styles.labelText}>Select Room Type</Text>
+                      <AntDesign name="caretdown" size={22} color="#5b96d8" />
+                    </View>
+                    <View style={styles.itemList}>
+                      <Text style={styles.listText}>Jai ho</Text>
+                      <Text style={styles.listText}>Jai ho</Text>
+                      <Text style={styles.listText}>Jai ho</Text>
+                      <Text style={styles.listText}>Jai ho</Text>
+                      <Text style={styles.listText}>Jai ho</Text>
+                    </View>
+                  </View>
                 </View>
                 <NextBtnSubmit buttonTitle="Create Device" />
               </Fragment>
@@ -122,9 +121,42 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginTop: 10,
   },
-  selectbox: {
-    color: '#fff',
+  selectInputBox: {
+    marginTop: 5,
+    marginBottom: 0,
+    width: '100%',
+    height: 48,
+    borderColor: '#1a1d2e',
+    borderRadius: 0,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#1a1d2e',
-    justifyContent: 'center',
+    elevation: 3,
+    position: 'relative',
+  },
+  selectInputRow: {
+    padding: 10,
+    flex: 1,
+    fontSize: 16,
+    fontFamily: 'Lato-Regular',
+    color: '#fff',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  labelText: {
+    color: '#ccc',
+    fontSize: 16,
+  },
+  itemList: {
+    backgroundColor: '#fff',
+    position: 'absolute',
+    top: 50,
+    width: '100%',
+  },
+  listText: {
+    fontSize: 16,
+    padding: 10,
   },
 });
