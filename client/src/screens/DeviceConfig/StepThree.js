@@ -1,5 +1,5 @@
-import {Dimensions, StyleSheet, Text, View} from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import {Dimensions, StyleSheet, Text, View, FlatList} from 'react-native';
+
 import {useNetInfo} from '@react-native-community/netinfo';
 import WifiManager from 'react-native-wifi-reborn';
 import React, {useEffect} from 'react';
@@ -76,10 +76,20 @@ const StepThree = ({navigation}) => {
       <View style={styles.container}>
         <Text style={styles.mainHeading}>Follow Steps Belwo</Text>
         <View style={styles.listContainer}>
-          <Text style={styles.listItem}>. ddfadfga</Text>
-          <Text style={styles.listItem}>. ddfadfga</Text>
-          <Text style={styles.listItem}>. ddfadfga</Text>
-          <Text style={styles.listItem}>. ddfadfga</Text>
+          <Text style={styles.listItem}>
+            . IMPORTANT Please, Tunn off Mobile Data (3G,4G, 5G etc)
+          </Text>
+
+          <Text style={styles.listItem}>
+            . Go to Settings, select WiFi Settings
+          </Text>
+          <Text style={styles.listItem}>
+            . Select WiFi with the name "PHONE_PE_HOME_REL_3_XXX", connect to
+            that WiFi.
+          </Text>
+          <Text style={styles.listItem}>
+            . Goback Here and Proceed to next step.
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.checkboxContainer}
@@ -114,6 +124,7 @@ const styles = StyleSheet.create({
   listItem: {
     color: '#fff',
     marginBottom: 5,
+    lineHeight: 20,
   },
   checkboxContainer: {
     flexDirection: 'row',

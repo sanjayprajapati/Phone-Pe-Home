@@ -3,7 +3,10 @@ import React from 'react';
 
 const NextBtn = ({title, action}) => {
   return (
-    <TouchableOpacity style={styles.btnStyle} onPress={action}>
+    <TouchableOpacity
+      style={styles.btnStyle}
+      onPress={action}
+      activeOpacity={0.7}>
       <Text style={styles.title}>{title}</Text>
     </TouchableOpacity>
   );

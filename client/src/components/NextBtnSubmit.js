@@ -14,7 +14,9 @@ const NextBtnSubmit = ({buttonTitle, ...rest}) => {
     <TouchableOpacity
       style={styles.btnStyle}
       onPress={isSubmitting ? null : handleSubmit}
-      {...rest}>
+      {...rest}
+      activeOpacity={0.7}
+      disabled={true}>
       <Text style={styles.title}>{buttonTitle}</Text>
     </TouchableOpacity>
   );
