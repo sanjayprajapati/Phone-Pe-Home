@@ -154,9 +154,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     width: '100%',
+    backgroundColor: '#1a1d2e',
   },
   listText: {
     fontSize: 16,
     padding: 10,
+    color: '#fff',
+    borderBottomColor: '#000',
+    borderBottomWidth: 1,
   },
 });
