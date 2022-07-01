@@ -5,9 +5,10 @@ import {
   View,
   KeyboardAvoidingView,
   Keyboard,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
-import SelectDropdown from 'react-native-select-dropdown';
 import MainLayout from '../Layouts/MainLayout';
 import FormInput from '../../components/FormInput';
 import {Formik} from 'formik';
@@ -20,24 +21,54 @@ import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
 import InnerLoader from '../../components/InnerLoader';
 import {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import SelectDropdown from '../../components/SelectDropdown';
 
 const initialValues = {
   deviceId: '',
+  roomsId: '',
 };
 const createDeviceSchema = yup.object().shape({
   deviceId: yup
     .string()
     .trim()
-    .min(14, 'Too short')
+    .min(4, 'Too short')
     .required('Device ID is Missing!'),
   roomsId: yup.string().trim().required('Room Type is Missing!'),
 });
 const {height, width} = Dimensions.get('window');
 
 const FinalStep = ({navigation}) => {
-  const countries = ['Egypt', 'Canada', 'Australia', 'Ireland'];
+  const roomType = [
+    {_id: 1, name: 'Living Room'},
+    {_id: 2, name: 'Kitchen'},
+    {_id: 3, name: 'Bathroom'},
+    {_id: 4, name: 'Bedroom'},
+    {_id: 5, name: 'Other'},
+  ];
 
   const [isLoading, setIsLoading] = useState(false);
+  const [room, setRoom] = useState('Select Room Type');
+  const [display, setDisplay] = useState('none');
+  const [init, setInit] = useState(initialValues);
+  const [val, setVal] = useState('');
+
+  const handleDropdown = () => {
+    if (display === 'none') {
+      setDisplay('flex');
+      return;
+    }
+    setDisplay('none');
+  };
+
+  const handleRooms = (item, deviceName) => {
+    setDisplay('none');
+    setRoom(item.name);
+    let obj = {...init};
+    obj.roomsId = item._id.toString();
+    obj.deviceId = deviceName;
+    setInit({...obj});
+    console.log(obj);
+  };
 
   const handleDeviceID = async (values, FormikActions) => {
     Keyboard.dismiss();
@@ -47,32 +78,56 @@ const FinalStep = ({navigation}) => {
     FormikActions.setSubmitting(false);
     console.log(res);
     if (!res) {
+      FormikActions.resetForm();
       console.log('succes false', res);
       setIsLoading(false);
+      setInit(initialValues);
+      setRoom('Select Room Type');
+
       return;
     } else {
       FormikActions.resetForm();
       setIsLoading(false);
+      setVal('');
+      setRoom('Select Room Type');
       navigation.navigate('StepThree');
       return console.log(res);
     }
   };
-  console.log('>>>', isLoading);
+  //console.log('>>>', isLoading);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <MainLayout pageHeight={height - 80}>
         {isLoading ? <InnerLoader /> : null}
         <Formik
-          initialValues={initialValues}
+          initialValues={init}
+          enableReinitialize={true}
           validationSchema={createDeviceSchema}
           onSubmit={handleDeviceID}>
           {({handleSubmit, values}) => {
+            console.log(values);
+            //setVal(values.deviceId);
             return (
               <Fragment>
                 <View style={styles.container}>
                   <Text style={styles.labels}>Select Room To Assign</Text>
 
-                  <Text style={styles.labels}>Name Your Room</Text>
+                  <SelectDropdown
+                    room={room}
+                    display={display}
+                    data={roomType}
+                    deviceName={values.deviceId}
+                    handleRooms={handleRooms}
+                    handleDropdown={handleDropdown}
+                    value={values.roomsId}
+                    name="roomsId"
+                    placheHolder="*"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+
+                  <Text style={styles.labels}>Name Your Device</Text>
                   <Input
                     value={values.deviceId}
                     name="deviceId"
@@ -82,19 +137,6 @@ const FinalStep = ({navigation}) => {
                     autoCapitalize="none"
                     autoCorrect={false}
                   />
-                  <View style={styles.selectInputBox}>
-                    <View style={styles.selectInputRow}>
-                      <Text style={styles.labelText}>Select Room Type</Text>
-                      <AntDesign name="caretdown" size={22} color="#5b96d8" />
-                    </View>
-                    <View style={styles.itemList}>
-                      <Text style={styles.listText}>Jai ho</Text>
-                      <Text style={styles.listText}>Jai ho</Text>
-                      <Text style={styles.listText}>Jai ho</Text>
-                      <Text style={styles.listText}>Jai ho</Text>
-                      <Text style={styles.listText}>Jai ho</Text>
-                    </View>
-                  </View>
                 </View>
                 <NextBtnSubmit buttonTitle="Create Device" />
               </Fragment>
@@ -141,6 +183,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: 'Lato-Regular',
     color: '#fff',
+  },
+  pressbtn: {
     justifyContent: 'space-between',
     alignItems: 'center',
     flexDirection: 'row',
@@ -155,6 +199,7 @@ const styles = StyleSheet.create({
     top: 50,
     width: '100%',
     backgroundColor: '#1a1d2e',
+    zIndex: 1,
   },
   listText: {
     fontSize: 16,
