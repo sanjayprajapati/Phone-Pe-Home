@@ -9,7 +9,7 @@ import Profile from '../screens/Profile/Profile';
 import Settings from '../screens/Settings/Settings';
 import Devices from '../screens/Devices/Devices';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import {addDevice} from '../redux/actions/stackAction';
 
@@ -51,7 +51,8 @@ const TabRoutes = ({navigation, route}) => {
           } else if (route.name === 'Settings') {
             iconName = focused ? 'cog' : 'cog';
           } else if (route.name === 'Devices') {
-            iconName = focused ? 'lightbulb-o' : 'lightbulb-o';
+            iconName = focused ? 'md-cube-sharp' : 'md-cube-sharp';
+            return <Ionicons name={iconName} size={size} color={color} />;
           }
 
           // You can return any component that you like here!

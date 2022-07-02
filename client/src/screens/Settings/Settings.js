@@ -5,6 +5,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Backbutton from '../../components/Backbutton';
 import AddDevice from './AddDevice';
 import {CommonActions} from '@react-navigation/native';
+import MainScreen from './MainScreen';
+import HomeSettings from './HomeSettings';
+import EditHome from './EditHome';
 
 const Stack = createStackNavigator();
 
@@ -16,8 +19,80 @@ const Settings = ({navigation}) => {
     navigation.goBack();
   };
 
+  const Edit = event => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.mr}
+        onPress={() => {
+          navigation.navigate(event);
+        }}>
+        <Text style={styles.righttab}>Edit</Text>
+      </TouchableOpacity>
+    );
+  };
+  const Cancel = event => {
+    return (
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.mr}
+        onPress={() => {
+          navigation.navigate(event);
+        }}>
+        <Text style={styles.righttab}>Cancel</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="MainScreen">
+      <Stack.Screen
+        name="MainScreen"
+        component={MainScreen}
+        options={{
+          title: 'Settings',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="HomeSettings"
+        component={HomeSettings}
+        options={{
+          title: 'Home',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerRight: () => Edit('EditHome'),
+        }}
+      />
+      <Stack.Screen
+        name="EditHome"
+        component={EditHome}
+        options={{
+          title: 'Home',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+          headerRight: () => Cancel('HomeSettings'),
+        }}
+      />
       <Stack.Screen
         name="AddDevice"
         component={AddDevice}
@@ -60,5 +135,13 @@ const styles = StyleSheet.create({
     color: '#5b96d8',
     fontFamily: 'Lato-Regular',
     textTransform: 'uppercase',
+  },
+  righttab: {
+    backgroundColor: '#181b2c',
+    color: '#5b96d8',
+    fontSize: 14,
+  },
+  mr: {
+    marginRight: 20,
   },
 });

@@ -26,7 +26,7 @@ export default NextBtnSubmit;
 const styles = StyleSheet.create({
   btnStyle: {
     width: '100%',
-    padding: 15,
+    padding: 10,
     backgroundColor: '#272a3b',
     position: 'absolute',
     bottom: 0,

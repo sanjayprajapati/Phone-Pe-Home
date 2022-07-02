@@ -71,28 +71,29 @@ const FinalStep = ({navigation}) => {
   };
 
   const handleDeviceID = async (values, FormikActions) => {
-    Keyboard.dismiss();
-    setIsLoading(true);
+    // Keyboard.dismiss();
+    // setIsLoading(true);
 
-    const res = await getDeviceID(values);
-    FormikActions.setSubmitting(false);
-    console.log(res);
-    if (!res) {
-      FormikActions.resetForm();
-      console.log('succes false', res);
-      setIsLoading(false);
-      setInit(initialValues);
-      setRoom('Select Room Type');
+    // const res = await getDeviceID(values);
+    // FormikActions.setSubmitting(false);
+    // console.log(res);
+    // if (!res) {
+    //   FormikActions.resetForm();
+    //   console.log('succes false', res);
+    //   setIsLoading(false);
+    //   setInit(initialValues);
+    //   setRoom('Select Room Type');
 
-      return;
-    } else {
-      FormikActions.resetForm();
-      setIsLoading(false);
-      setVal('');
-      setRoom('Select Room Type');
-      navigation.navigate('StepThree');
-      return console.log(res);
-    }
+    //   return;
+    // } else {
+    //   FormikActions.resetForm();
+    //   setIsLoading(false);
+    //   setVal('');
+    //   setRoom('Select Room Type');
+    //   navigation.navigate('StepThree');
+    //   return console.log(res);
+    // }
+    navigation.navigate('Settings');
   };
   //console.log('>>>', isLoading);
   return (

@@ -51,7 +51,7 @@ const StepTwo = ({navigation}) => {
       return console.log(res);
     }
   };
-  console.log('>>>', isLoading);
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <MainLayout pageHeight={height - 80}>
