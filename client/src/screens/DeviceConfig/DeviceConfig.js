@@ -35,9 +35,6 @@ const DeviceConfig = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
         }}
       />
       <Stack.Screen
@@ -53,9 +50,6 @@ const DeviceConfig = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
         }}
       />
       <Stack.Screen
@@ -71,9 +65,6 @@ const DeviceConfig = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={parentScreen} titleInfo="Previus" />
-          ),
         }}
       />
       <Stack.Screen
@@ -89,9 +80,6 @@ const DeviceConfig = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={previusScreen} titleInfo="Previus" />
-          ),
         }}
       />
       <Stack.Screen
@@ -107,9 +95,6 @@ const DeviceConfig = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={previusScreen} titleInfo="Previus" />
-          ),
         }}
       />
     </Stack.Navigator>

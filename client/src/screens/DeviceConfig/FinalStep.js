@@ -8,7 +8,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import FormInput from '../../components/FormInput';
 import {Formik} from 'formik';
@@ -22,35 +22,33 @@ import InnerLoader from '../../components/InnerLoader';
 import {useState} from 'react';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from '../../components/SelectDropdown';
+import {async} from 'validate.js';
+import {getRoomType} from '../../utils/getRoomType';
 
 const initialValues = {
-  deviceId: '',
-  roomsId: '',
+  devicename: '',
+  roomtypeId: '',
 };
 const createDeviceSchema = yup.object().shape({
-  deviceId: yup
+  devicename: yup
     .string()
     .trim()
     .min(4, 'Too short')
     .required('Device ID is Missing!'),
-  roomsId: yup.string().trim().required('Room Type is Missing!'),
+  roomtypeId: yup.string().trim().required('Room Type is Missing!'),
 });
 const {height, width} = Dimensions.get('window');
 
 const FinalStep = ({navigation}) => {
-  const roomType = [
-    {_id: 1, name: 'Living Room'},
-    {_id: 2, name: 'Kitchen'},
-    {_id: 3, name: 'Bathroom'},
-    {_id: 4, name: 'Bedroom'},
-    {_id: 5, name: 'Other'},
-  ];
+  let data;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [room, setRoom] = useState('Select Room Type');
+  const [roomTypeName, setRoomTypeName] = useState('Select Room Type');
+  const [roomtypeid, setRoomtyleid] = useState('');
   const [display, setDisplay] = useState('none');
-  const [init, setInit] = useState(initialValues);
-  const [val, setVal] = useState('');
+  const [deviceName, setDeviceName] = useState('');
+  const [newData, setSetNewData] = useState([]);
+  const inputRef = useRef();
 
   const handleDropdown = () => {
     if (display === 'none') {
@@ -60,20 +58,16 @@ const FinalStep = ({navigation}) => {
     setDisplay('none');
   };
 
-  const handleRooms = (item, deviceName) => {
+  const handleRooms = item => {
     setDisplay('none');
-    setRoom(item.name);
-    let obj = {...init};
-    obj.roomsId = item._id.toString();
-    obj.deviceId = deviceName;
-    setInit({...obj});
-    console.log(obj);
+    setRoomTypeName(item.roomtype);
+    setRoomtyleid(item._id);
+    //console.log(obj);
   };
 
   const handleDeviceID = async (values, FormikActions) => {
     // Keyboard.dismiss();
     // setIsLoading(true);
-
     // const res = await getDeviceID(values);
     // FormikActions.setSubmitting(false);
     // console.log(res);
@@ -82,46 +76,51 @@ const FinalStep = ({navigation}) => {
     //   console.log('succes false', res);
     //   setIsLoading(false);
     //   setInit(initialValues);
-    //   setRoom('Select Room Type');
-
+    //   setRoomTypeName('Select Room Type');
     //   return;
     // } else {
     //   FormikActions.resetForm();
     //   setIsLoading(false);
     //   setVal('');
-    //   setRoom('Select Room Type');
-    //   navigation.navigate('StepThree');
+    //   setRoomTypeName('Select Room Type');
+    //   //navigation.navigate('StepThree');
     //   return console.log(res);
     // }
-    navigation.navigate('Settings');
+    navigation.navigate('Settings', {screen: 'AddDevice'});
   };
   //console.log('>>>', isLoading);
+  useEffect(() => {
+    const getData = async () => {
+      data = await getRoomType();
+      console.log(data);
+      setSetNewData(data);
+    };
+    getData();
+  }, []);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <MainLayout pageHeight={height - 80}>
         {isLoading ? <InnerLoader /> : null}
         <Formik
-          initialValues={init}
+          initialValues={{devicename: deviceName, roomtypeId: roomtypeid}}
           enableReinitialize={true}
           validationSchema={createDeviceSchema}
           onSubmit={handleDeviceID}>
           {({handleSubmit, values}) => {
             console.log(values);
-            //setVal(values.deviceId);
             return (
               <Fragment>
                 <View style={styles.container}>
                   <Text style={styles.labels}>Select Room To Assign</Text>
 
                   <SelectDropdown
-                    room={room}
+                    roomTypeName={roomTypeName}
                     display={display}
-                    data={roomType}
-                    deviceName={values.deviceId}
+                    data={newData}
                     handleRooms={handleRooms}
                     handleDropdown={handleDropdown}
-                    value={values.roomsId}
-                    name="roomsId"
+                    value={values.roomtypeId}
+                    name="roomtypeId"
                     placheHolder="*"
                     keyboardType="email-address"
                     autoCapitalize="none"
@@ -130,8 +129,8 @@ const FinalStep = ({navigation}) => {
 
                   <Text style={styles.labels}>Name Your Device</Text>
                   <Input
-                    value={values.deviceId}
-                    name="deviceId"
+                    value={values.devicename}
+                    name="devicename"
                     placheHolder="Enter Room Name"
                     iconType="user"
                     keyboardType="email-address"

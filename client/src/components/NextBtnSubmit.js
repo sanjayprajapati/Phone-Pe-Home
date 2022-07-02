@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#272a3b',
     position: 'absolute',
-    bottom: 0,
-    zIndex: 9,
+    bottom: 5,
+    zIndex: 1,
   },
   title: {
     color: '#79c142',

@@ -17,7 +17,7 @@ const SelectDropdown = ({
   isSecure,
   onChange,
   name,
-  room,
+  roomTypeName,
   data,
   handleRooms,
   handleDropdown,
@@ -36,7 +36,7 @@ const SelectDropdown = ({
         ]}>
         <View style={styles.selectInputRow}>
           <TouchableOpacity style={styles.pressbtn} onPress={handleDropdown}>
-            <Text style={styles.labelText}>{room}</Text>
+            <Text style={styles.labelText}>{roomTypeName}</Text>
             <AntDesign name="caretdown" size={22} color="#5b96d8" />
           </TouchableOpacity>
         </View>
@@ -47,7 +47,7 @@ const SelectDropdown = ({
                 <TouchableOpacity
                   key={item._id}
                   onPress={() => handleRooms(item, deviceName)}>
-                  <Text style={styles.listText}>{item.name}</Text>
+                  <Text style={styles.listText}>{item.roomtype}</Text>
                 </TouchableOpacity>
               );
             })}

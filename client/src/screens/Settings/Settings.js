@@ -9,6 +9,7 @@ import MainScreen from './MainScreen';
 import HomeSettings from './HomeSettings';
 import EditHome from './EditHome';
 import RoomSettings from './RoomSettings';
+import EditRoom from './EditRoom';
 
 const Stack = createStackNavigator();
 
@@ -62,6 +63,7 @@ const Settings = ({navigation}) => {
           },
         }}
       />
+
       <Stack.Screen
         name="HomeSettings"
         component={HomeSettings}
@@ -110,6 +112,21 @@ const Settings = ({navigation}) => {
         }}
       />
       <Stack.Screen
+        name="EditRoom"
+        component={EditRoom}
+        options={({route}) => ({
+          title: route.params.item.roomname,
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        })}
+      />
+      <Stack.Screen
         name="AddDevice"
         component={AddDevice}
         options={{
@@ -122,9 +139,6 @@ const Settings = ({navigation}) => {
           headerTitleStyle: {
             fontWeight: 'bold',
           },
-          headerLeft: () => (
-            <Backbutton goBack={previusScreen} titleInfo="Previus" />
-          ),
         }}
       />
     </Stack.Navigator>

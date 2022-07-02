@@ -97,7 +97,7 @@ const TabRoutes = ({navigation, route}) => {
       <BottomTab.Screen
         name="Settings"
         component={Settings}
-        options={{header: () => null}}
+        options={{headerShown: false}}
       />
     </BottomTab.Navigator>
   );

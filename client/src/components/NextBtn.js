@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: '#272a3b',
     position: 'absolute',
-    bottom: 0,
+    bottom: 5,
     zIndex: 1,
   },
   title: {
