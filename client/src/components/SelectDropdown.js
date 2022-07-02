@@ -44,7 +44,9 @@ const SelectDropdown = ({
           {data &&
             data.map((item, index) => {
               return (
-                <TouchableOpacity onPress={() => handleRooms(item, deviceName)}>
+                <TouchableOpacity
+                  key={item._id}
+                  onPress={() => handleRooms(item, deviceName)}>
                   <Text style={styles.listText}>{item.name}</Text>
                 </TouchableOpacity>
               );

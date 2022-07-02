@@ -8,6 +8,7 @@ import {CommonActions} from '@react-navigation/native';
 import MainScreen from './MainScreen';
 import HomeSettings from './HomeSettings';
 import EditHome from './EditHome';
+import RoomSettings from './RoomSettings';
 
 const Stack = createStackNavigator();
 
@@ -91,6 +92,21 @@ const Settings = ({navigation}) => {
             fontWeight: 'bold',
           },
           headerRight: () => Cancel('HomeSettings'),
+        }}
+      />
+      <Stack.Screen
+        name="RoomSettings"
+        component={RoomSettings}
+        options={{
+          title: 'Rooms',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
         }}
       />
       <Stack.Screen

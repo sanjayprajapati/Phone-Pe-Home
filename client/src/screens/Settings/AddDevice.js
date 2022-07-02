@@ -15,10 +15,10 @@ const AddDevice = ({navigation}) => {
         <Text style={styles.subText}>
           To add device click on + icon shown in the Screen
         </Text>
-        <Pressable style={styles.addBtn} onPress={gotoStepOne}>
-          <Octicons size={22} color="#000" name="plus" />
-        </Pressable>
       </View>
+      <Pressable style={styles.addBtn} onPress={gotoStepOne}>
+        <Octicons size={22} color="#000" name="plus" />
+      </Pressable>
     </MainLayout>
   );
 };
@@ -31,7 +31,8 @@ const styles = StyleSheet.create({
   container: {
     position: 'relative',
     alignItems: 'center',
-    height: '80%',
+    height: '100%',
+    paddingTop: 50,
   },
   mainText: {
     fontSize: 18,
@@ -51,7 +52,8 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    bottom: 10,
-    right: 10,
+    bottom: 30,
+    right: 20,
+    zIndex: 9,
   },
 });
