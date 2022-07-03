@@ -18,7 +18,9 @@ const RoomSettings = ({navigation}) => {
     console.log(item.roomname);
     navigation.navigate('EditRoom', {item});
   };
-  const addRoom = () => {};
+  const addRoom = () => {
+    navigation.navigate('AddRoom');
+  };
   return (
     <MainLayout>
       <ScrollView>

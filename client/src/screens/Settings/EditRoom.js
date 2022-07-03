@@ -79,15 +79,7 @@ const EditRoom = ({navigation, route}) => {
                   <View>
                     <Text style={styles.subHead}>Edit Your Room</Text>
                   </View>
-                  <Input
-                    value={values.roomname}
-                    name="roomname"
-                    placheHolder="Enter Room Name *"
-                    iconType="user"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
+
                   <SelectDropdown
                     roomTypeName={roomTypeName}
                     display={display}
@@ -97,6 +89,15 @@ const EditRoom = ({navigation, route}) => {
                     value={values.roomtypeId}
                     name="roomtypeId"
                     placheHolder="*"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
+                  <Input
+                    value={values.roomname}
+                    name="roomname"
+                    placheHolder="Enter Room Name *"
+                    iconType="user"
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}

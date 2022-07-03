@@ -10,6 +10,9 @@ import HomeSettings from './HomeSettings';
 import EditHome from './EditHome';
 import RoomSettings from './RoomSettings';
 import EditRoom from './EditRoom';
+import AddRoom from './AddRoom';
+import DeviceSettings from './DeviceSettings';
+import About from './About';
 
 const Stack = createStackNavigator();
 
@@ -112,6 +115,21 @@ const Settings = ({navigation}) => {
         }}
       />
       <Stack.Screen
+        name="AddRoom"
+        component={AddRoom}
+        options={({route}) => ({
+          title: 'Create Room',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        })}
+      />
+      <Stack.Screen
         name="EditRoom"
         component={EditRoom}
         options={({route}) => ({
@@ -127,10 +145,25 @@ const Settings = ({navigation}) => {
         })}
       />
       <Stack.Screen
-        name="AddDevice"
-        component={AddDevice}
+        name="DeviceSettings"
+        component={DeviceSettings}
         options={{
           title: 'Devices',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="About"
+        component={About}
+        options={{
+          title: 'About',
           headerStyle: {
             backgroundColor: '#181b2c',
             height: 60,

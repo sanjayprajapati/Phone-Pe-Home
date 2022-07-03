@@ -29,7 +29,7 @@ const MainScreen = ({navigation}) => {
           <SettingsTab
             tabLabel="Devices"
             iconName="devices"
-            handleNavigation={() => navigation.navigate('HomeSettings')}
+            handleNavigation={() => navigation.navigate('DeviceSettings')}
           />
         </View>
         <View style={styles.row}>
@@ -50,7 +50,7 @@ const MainScreen = ({navigation}) => {
           <SettingsTab
             tabLabel="About"
             iconName="about"
-            handleNavigation={() => navigation.navigate('HomeSettings')}
+            handleNavigation={() => navigation.navigate('About')}
           />
           <SettingsTab
             tabLabel="Logout"
