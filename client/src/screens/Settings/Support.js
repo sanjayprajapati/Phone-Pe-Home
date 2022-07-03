@@ -3,7 +3,7 @@ import React from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import pkg from '../../../package.json';
 
-const Profile = () => {
+const Support = () => {
   return (
     <MainLayout>
       <View style={styles.container}>
@@ -29,7 +29,7 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Support;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,10 +1,13 @@
 import {StyleSheet, Text, View, ScrollView, Pressable} from 'react-native';
 import React from 'react';
+import {useDispatch} from 'react-redux';
+import {logout} from '../../redux/actions/authAction';
 import MainLayout from '../Layouts/MainLayout';
 
 import SettingsTab from '../../components/SettingsTab';
 
 const MainScreen = ({navigation}) => {
+  const dispatch = useDispatch();
   const homeSettings = () => {
     navigation.navigate('HomeSettings');
   };
@@ -37,7 +40,7 @@ const MainScreen = ({navigation}) => {
           <SettingsTab
             tabLabel="Support"
             iconName="support"
-            handleNavigation={() => navigation.navigate('HomeSettings')}
+            handleNavigation={() => navigation.navigate('Support')}
           />
         </View>
         <View style={styles.row}>
@@ -55,7 +58,7 @@ const MainScreen = ({navigation}) => {
           <SettingsTab
             tabLabel="Logout"
             iconName="logout"
-            handleNavigation={() => navigation.navigate('HomeSettings')}
+            handleNavigation={() => dispatch(logout())}
           />
         </View>
       </ScrollView>

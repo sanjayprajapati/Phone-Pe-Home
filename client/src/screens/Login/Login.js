@@ -143,15 +143,15 @@ const styles = StyleSheet.create({
     paddingTop: 50,
   },
   logo: {
-    height: 100,
-    width: 100,
+    height: 80,
+    width: 80,
     resizeMode: 'cover',
   },
   text: {
     fontFamily: 'Kufam-SemiBoldItalic',
     fontSize: 28,
     marginBottom: 10,
-    color: '#000',
+    color: '#fff',
   },
   navButton: {
     marginTop: 15,
@@ -160,9 +160,9 @@ const styles = StyleSheet.create({
     marginVertical: 0,
   },
   navButtonText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
-    color: '#2e64e5',
+    color: '#5b96d8',
     fontFamily: 'Lato-Regular',
   },
   checkContainer: {
@@ -174,9 +174,9 @@ const styles = StyleSheet.create({
     marginTop: 35,
   },
   buttontextbottom: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
-    color: '#2e64e5',
+    color: '#5b96d8',
     fontFamily: 'Lato-Regular',
   },
 });

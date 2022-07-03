@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Kufam-SemiBoldItalic',
     fontSize: 28,
     marginBottom: 10,
-    color: '#051d5f',
+    color: '#fff',
   },
   navButton: {
     marginTop: 15,
@@ -201,9 +201,9 @@ const styles = StyleSheet.create({
     marginVertical: 35,
   },
   navButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
-    color: '#2e64e5',
+    color: '#5b96d8',
     fontFamily: 'Lato-Regular',
   },
 });

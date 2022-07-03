@@ -20,17 +20,17 @@ const FormInput = ({
       <View
         style={[
           styles.inputContainer,
-          {borderColor: touched[name] && errors[name] ? 'red' : '#d3d3d3'},
+          {borderColor: touched[name] && errors[name] ? '#000' : '#000'},
         ]}>
         <View
           style={[
             styles.iconStyle,
-            {borderColor: touched[name] && errors[name] ? 'red' : '#d3d3d3'},
+            {borderColor: touched[name] && errors[name] ? '#000' : '#000'},
           ]}>
           {iconType === 'cellphone-message' ? (
-            <MaterialCommunityIcons name={iconType} size={22} color="#666" />
+            <MaterialCommunityIcons name={iconType} size={22} color="#ccc" />
           ) : (
-            <AntDesign name={iconType} size={22} color="#666" />
+            <AntDesign name={iconType} size={22} color="#ccc" />
           )}
         </View>
         <TextInput
@@ -38,7 +38,7 @@ const FormInput = ({
           placeholder={placheHolder}
           onChangeText={handleChange(name)}
           style={styles.input}
-          placeholderTextColor="gray"
+          placeholderTextColor="#ccc"
           onBlur={handleBlur(name)}
           clearButtonMode="always"
           {...props}
@@ -59,21 +59,20 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     width: '100%',
     height: 48,
-    borderColor: '#D3D3D3',
-    borderRadius: 8,
+    borderColor: '#000',
+    borderRadius: 0,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#12162c',
     elevation: 2,
-    backgroundColor: '#fff',
   },
   iconStyle: {
     padding: 10,
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightColor: '#D3D3D3',
+    borderRightColor: '#000',
     borderRightWidth: 1,
     width: 50,
   },
@@ -82,7 +81,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     fontFamily: 'Lato-Regular',
-    color: '#000',
+    color: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -99,6 +98,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 0,
     color: '#ff0000',
+    fontSize: 12,
+    fontFamily: 'Lato-Regular',
   },
 });
 

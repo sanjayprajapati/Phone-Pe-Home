@@ -52,17 +52,12 @@ const AuthStack = () => {
           options={{
             title: 'Forgot Password',
             headerStyle: {
-              backgroundColor: '#fff',
+              backgroundColor: '#181b2c',
               height: 60,
-              borderBottomRightRadius: 0,
-              borderBottomLeftRadius: 0,
-              elevation: 0,
             },
-            headerTintColor: '#000',
+            headerTintColor: '#fff',
             headerTitleStyle: {
-              fontWeight: 'normal',
-              width: '100%',
-              fontSize: 24,
+              fontWeight: 'bold',
             },
           }}
         />
@@ -72,17 +67,12 @@ const AuthStack = () => {
           options={{
             title: 'Reset Password',
             headerStyle: {
-              backgroundColor: '#fff',
+              backgroundColor: '#181b2c',
               height: 60,
-              borderBottomRightRadius: 0,
-              borderBottomLeftRadius: 0,
-              elevation: 0,
             },
-            headerTintColor: '#000',
+            headerTintColor: '#fff',
             headerTitleStyle: {
-              fontWeight: 'normal',
-              width: '100%',
-              fontSize: 24,
+              fontWeight: 'bold',
             },
           }}
         />
@@ -114,17 +104,12 @@ const AuthStack = () => {
           options={{
             title: 'Forgot Password',
             headerStyle: {
-              backgroundColor: '#fff',
+              backgroundColor: '#181b2c',
               height: 60,
-              borderBottomRightRadius: 0,
-              borderBottomLeftRadius: 0,
-              elevation: 0,
             },
-            headerTintColor: '#000',
+            headerTintColor: '#fff',
             headerTitleStyle: {
-              fontWeight: 'normal',
-              width: '100%',
-              fontSize: 24,
+              fontWeight: 'bold',
             },
           }}
         />
@@ -134,17 +119,12 @@ const AuthStack = () => {
           options={{
             title: 'Reset Password',
             headerStyle: {
-              backgroundColor: '#fff',
+              backgroundColor: '#181b2c',
               height: 60,
-              borderBottomRightRadius: 0,
-              borderBottomLeftRadius: 0,
-              elevation: 0,
             },
-            headerTintColor: '#000',
+            headerTintColor: '#fff',
             headerTitleStyle: {
-              fontWeight: 'normal',
-              width: '100%',
-              fontSize: 24,
+              fontWeight: 'bold',
             },
           }}
         />

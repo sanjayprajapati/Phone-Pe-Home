@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginRight: 0,
     color: '#ff0000',
+    fontSize: 12,
+    fontFamily: 'Lato-Regular',
   },
 });
 

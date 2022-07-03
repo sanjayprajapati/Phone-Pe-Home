@@ -13,6 +13,7 @@ import EditRoom from './EditRoom';
 import AddRoom from './AddRoom';
 import DeviceSettings from './DeviceSettings';
 import About from './About';
+import Support from './Support';
 
 const Stack = createStackNavigator();
 
@@ -164,6 +165,21 @@ const Settings = ({navigation}) => {
         component={About}
         options={{
           title: 'About',
+          headerStyle: {
+            backgroundColor: '#181b2c',
+            height: 60,
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}
+      />
+      <Stack.Screen
+        name="Support"
+        component={Support}
+        options={{
+          title: 'Support',
           headerStyle: {
             backgroundColor: '#181b2c',
             height: 60,
