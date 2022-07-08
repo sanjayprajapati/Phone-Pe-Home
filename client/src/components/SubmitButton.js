@@ -16,7 +16,7 @@ const SubmitButton = ({buttonTitle, ...rest}) => {
       onPress={isSubmitting ? null : handleSubmit}
       {...rest}>
       {isSubmitting ? (
-        <ActivityIndicator size="large" color="#fff" />
+        <ActivityIndicator size="small" color="#fff" />
       ) : (
         <Text style={styles.buttonText}>{buttonTitle}</Text>
       )}

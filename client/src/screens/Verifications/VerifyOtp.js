@@ -15,6 +15,7 @@ import {useDispatch} from 'react-redux';
 import {RegisterUser} from '../../redux/actions/authAction';
 import {updateNotification} from '../../utils/helper';
 import AppNocitication from '../../components/AppNocitication';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const inputs = new Array(6).fill();
 let newInputIndex = 0;
@@ -78,9 +79,10 @@ const VerifyOtp = ({navigation, route}) => {
       ) : null}
       <AuthLayout>
         <View style={styles.container}>
-          <Image
-            source={require('../../assets/images/otp.png')}
-            style={styles.logo}
+          <MaterialCommunityIcons
+            name="cellphone-message"
+            color="#ccc"
+            size={56}
           />
           <Text style={styles.heading}>
             Please verify your account, OTP has been sent to your email and
@@ -90,6 +92,7 @@ const VerifyOtp = ({navigation, route}) => {
             {inputs.map((code, index) => (
               <TextInput
                 placeholder="*"
+                placeholderTextColor="#ccc"
                 value={OTP[index]}
                 onChangeText={text => onHandleChange(text, index)}
                 style={styles.input}
@@ -116,7 +119,7 @@ export default VerifyOtp;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignContent: 'center',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   inputContainer: {
@@ -125,18 +128,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   input: {
-    width: 45,
-    height: 45,
-    backgroundColor: '#fff',
+    width: 36,
+    height: 36,
+    backgroundColor: '#12162c',
     borderRadius: 2,
     borderWidth: 1,
-    borderColor: '#d3d3d3',
+    borderColor: '#000',
     elevation: 2,
     margin: 2,
     textAlign: 'center',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
+    color: '#ccc',
+    alignSelf: 'center',
+    fontSize: 14,
   },
   logo: {
     width: 50,
@@ -165,10 +170,11 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   heading: {
-    fontSize: 18,
+    fontSize: 16,
     marginLeft: 20,
     marginRight: 20,
     alignSelf: 'center',
     textAlign: 'center',
+    color: '#ccc',
   },
 });
