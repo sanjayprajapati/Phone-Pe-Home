@@ -25,7 +25,7 @@ const Home = ({navigation, route}) => {
 
   return (
     <Stack.Navigator>
-      {!hasDevice ? (
+      {hasDevice ? (
         <Stack.Screen
           name="Welcome"
           component={Welcome}
@@ -45,7 +45,17 @@ const Home = ({navigation, route}) => {
         <Stack.Screen
           name="Dashboard"
           component={Dashboard}
-          options={{header: () => null}}
+          options={{
+            title: 'Sweet Home',
+            headerStyle: {
+              backgroundColor: '#181b2c',
+              height: 60,
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
         />
       )}
     </Stack.Navigator>

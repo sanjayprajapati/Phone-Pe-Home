@@ -19,11 +19,12 @@ const CardDevice = ({
   isLadding,
   loading,
   deviceType,
+  disableButton,
   ...rest
 }) => {
   return (
     <View style={styles.container}>
-      {pawerState === 'ON' ? (
+      {pawerState === 'On' ? (
         <MaterialCommunityIcons size={40} color="#f1c919" name="lightbulb-on" />
       ) : (
         <MaterialCommunityIcons size={40} color="#81848d" name="lightbulb" />
@@ -31,8 +32,8 @@ const CardDevice = ({
 
       <Text style={styles.headding}>{devicename}</Text>
       <View style={styles.switchWrapper}>
-        <TouchableOpacity onPress={changeState}>
-          {pawerState === 'ON' ? (
+        <TouchableOpacity onPress={changeState} disabled={disableButton}>
+          {pawerState === 'On' ? (
             <AntDesign size={40} color="#ff0000" name="poweroff" />
           ) : (
             <AntDesign size={40} color="#5b96d8" name="poweroff" />
