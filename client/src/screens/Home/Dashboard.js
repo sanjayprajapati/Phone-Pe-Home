@@ -13,7 +13,7 @@ import Header from '../../components/Header';
 import {logout} from '../../redux/actions/authAction';
 import MainLayout from '../Layouts/MainLayout';
 import CardDevice from '../../components/devices/CardDevice';
-import {getDevices} from '../../utils/devices';
+import {getDevices, getDeviceIds} from '../../utils/devices';
 import CircleLoader from '../../components/CircleLoader';
 
 const {height, width} = Dimensions.get('window');
@@ -35,13 +35,15 @@ const Dashboard = () => {
   const [disableButton, setDisableButton] = React.useState(true);
   const [inputFieldEmpty, setInputFieldEmpty] = React.useState(true);
   const [serverMessages, setServerMessages] = React.useState([]);
+  const [deviceids, setDeviceIds] = useState([]);
   let local = 'ws://192.168.1.5:5000';
   let server = 'wss://origin8home.herokuapp.com';
   let mac = '30:83:98:82:E0:8D';
   let ip = '192.168.1.40';
   let token = {
-    userId: 'fbffc3b9-578f-48cb-84a1-4275fcb3a495',
-    clientId: '192.168.1.28E8:DB:84:AE:AD:52',
+    userID: 'f597bdc3-0abb-4761-a8d6-5b24ddeeff64',
+    roomID: '62d2fa1ba38f20fcbe442718',
+    deviceids: deviceids,
   };
   var headers = {};
   headers['cookie'] = `${JSON.stringify(token)}`;
@@ -76,10 +78,17 @@ const Dashboard = () => {
   };
   useEffect(() => {
     let data = null;
+    let ids = [];
     const getData = async () => {
       data = await getDevices();
       initialState = [...data];
       setItem(initialState);
+      for (let i = 0; i < data.length; i++) {
+        ids.push(initialState[i]._id);
+        //console.log(initialState[i]._id);
+      }
+      setDeviceIds([...ids]);
+      //console.log(ids);
     };
     getData();
   }, []);
