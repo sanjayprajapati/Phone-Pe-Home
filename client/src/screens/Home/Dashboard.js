@@ -32,25 +32,14 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [serverState, setServerState] = React.useState('Loading...');
   const [messageText, setMessageText] = React.useState('');
-  const [disableButton, setDisableButton] = React.useState(true);
+  const [disableButton, setDisableButton] = React.useState(false);
   const [inputFieldEmpty, setInputFieldEmpty] = React.useState(true);
   const [serverMessages, setServerMessages] = React.useState([]);
   const [deviceids, setDeviceIds] = useState([]);
-  let local = 'ws://192.168.1.5:5000';
-  let server = 'wss://origin8home.herokuapp.com';
-  let mac = '30:83:98:82:E0:8D';
-  let ip = '192.168.1.40';
-  let token = {
-    userID: 'f597bdc3-0abb-4761-a8d6-5b24ddeeff64',
-    roomID: '62d2fa1ba38f20fcbe442718',
-    deviceids: deviceids,
-  };
-  var headers = {};
-  headers['cookie'] = `${JSON.stringify(token)}`;
 
-  var ws = useRef(new WebSocket(local, null, {headers})).current;
+  const ws = useRef(null);
 
-  const sendMessage = ({deviceId, state, clientId}) => {
+  const sendMessage = ({deviceId, state}) => {
     let payload = {
       header: {
         payloadVersion: 2,
@@ -74,7 +63,42 @@ const Dashboard = () => {
       },
     };
 
-    ws.send(JSON.stringify(payload));
+    ws.current.send(JSON.stringify(payload));
+  };
+  const handleDevicePawerState = (id, index) => {
+    let newState = [...item];
+    let posi;
+    let pawerState;
+
+    setLoading(true);
+
+    newState = item.map(obj => {
+      // 👇️
+      if (obj._id === id) {
+        if (obj.pawerState === 'On') {
+          console.log('if', id);
+
+          sendMessage({deviceId: id, state: 'Off'});
+          return {...obj, pawerState: 'Off'};
+        } else {
+          console.log('else', id);
+
+          sendMessage({deviceId: id, state: 'On'});
+
+          return {...obj, pawerState: 'On'};
+        }
+      }
+
+      // 👇️ otherwise return object as is
+      return obj;
+    });
+
+    setLoading(false);
+    setItem(newState);
+
+    //ws.send(JSON.stringify({deviceId: id, state: obj.pawerState}));
+
+    setMessageText('');
   };
   useEffect(() => {
     let data = null;
@@ -92,20 +116,36 @@ const Dashboard = () => {
     };
     getData();
   }, []);
+
   useEffect(() => {
+    let local = 'ws://192.168.1.5:5000';
+    let server = 'wss://origin8home.herokuapp.com';
+    let mac = '30:83:98:82:E0:8D';
+    let ip = '192.168.1.40';
+    let token = {
+      appkey: 'f597bdc3-0abb-4761-a8d6-5b24ddeeff64',
+      clientId: '62d2fa1ba38f20fcbe442718',
+      deviceids:
+        '62d39de33ec7e13a8051e016,62d39de33ec7e13a8051e017,62d39de33ec7e13a8051e018,62d2f874249334b6e1231754,62d2f874249334b6e1231755',
+    };
+    var headers = {};
+    headers['cookie'] = `${JSON.stringify(token)}`;
     const serverMessagesList = [];
-    ws.onopen = () => {
+    console.log('initiateSocketConnection');
+    ws.current = new WebSocket(server, null, {headers});
+    ws.current.onopen = () => {
+      console.log('conneting to server');
       setServerState('Connected to the server');
       setDisableButton(false);
       console.log(serverMessages);
     };
-    ws.onclose = e => {
+    ws.current.onclose = e => {
       setServerState('Disconnected. Check internet or server.');
       setDisableButton(true);
       console.log(serverState);
       //clearTimeout(this.pingTimeout);
     };
-    ws.onmessage = e => {
+    ws.current.onmessage = e => {
       console.log(e);
       //serverMessagesList.push(e.data);
       setServerMessages([serverMessagesList]);
@@ -117,41 +157,6 @@ const Dashboard = () => {
     };
   }, []);
 
-  const handleDevicePawerState = (id, index) => {
-    let newState = [...item];
-    let posi;
-    let pawerState;
-
-    setLoading(true);
-
-    newState = item.map(obj => {
-      // 👇️
-      if (obj._id === id) {
-        if (obj.pawerState === 'On') {
-          console.log('if', id);
-
-          sendMessage({deviceId: id, state: 'Off', clientId: token.clientId});
-          return {...obj, pawerState: 'Off'};
-        } else {
-          console.log('else', id);
-
-          sendMessage({deviceId: id, state: 'On', clientId: token.clientId});
-
-          return {...obj, pawerState: 'On'};
-        }
-      }
-
-      // 👇️ otherwise return object as is
-      return obj;
-    });
-
-    setLoading(false);
-    setItem(newState);
-
-    //ws.send(JSON.stringify({deviceId: id, state: obj.pawerState}));
-
-    setMessageText('');
-  };
   // Encrypt
   // Decrypt
 
