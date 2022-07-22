@@ -17,7 +17,7 @@ const {height, width} = Dimensions.get('window');
 const Stack = createStackNavigator();
 
 const Home = ({navigation, route}) => {
-  const [hasDevice, setHasDevice] = useState(false);
+  const [hasDevice, setHasDevice] = useState(true);
 
   //const {loading, devices} = useSelector(state => state.devices);
 

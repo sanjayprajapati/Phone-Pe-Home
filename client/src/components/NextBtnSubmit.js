@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {useFormikContext} from 'formik';
 
-const NextBtnSubmit = ({buttonTitle, ...rest}) => {
+const NextBtnSubmit = ({buttonTitle, disable, ...rest}) => {
   const {handleSubmit, isSubmitting} = useFormikContext();
   return (
     <TouchableOpacity

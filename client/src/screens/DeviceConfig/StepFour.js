@@ -1,7 +1,9 @@
 import {Dimensions, StyleSheet, Text, View} from 'react-native';
+import {WebView} from 'react-native-webview';
 import React from 'react';
 import MainLayout from '../Layouts/MainLayout';
 import NextBtn from '../../components/NextBtn';
+import {Fragment} from 'react';
 const {height, width} = Dimensions.get('window');
 
 const StepFour = ({navigation}) => {
@@ -9,12 +11,15 @@ const StepFour = ({navigation}) => {
     navigation.navigate('FinalStep');
   };
   return (
-    <MainLayout pageHeight={height - 80}>
-      <View style={styles.container}>
-        <Text style={styles.mainHeading}>WiFi Setup</Text>
+    <Fragment>
+      <View style={{flex: 1}}>
+        <WebView
+          source={{uri: 'http://192.168.4.1/'}}
+          style={{marginTop: 20, backgroundColor: '#fff', height: 200}}
+        />
       </View>
       <NextBtn title="Next" action={nextStep} />
-    </MainLayout>
+    </Fragment>
   );
 };
 

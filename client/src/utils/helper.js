@@ -26,4 +26,14 @@ const updateNotification = (updater, text, type = 'error') => {
   }, 2500);
 };
 
-export {showError, showSuccess, updateNotification};
+const catchError = error => {
+  if (error?.response?.data) {
+    console.log('>>>', error.response.data);
+    return {success: false, error: error.response.data.message};
+  } else {
+    console.log('===', error.response.data);
+    return {success: false, error: error.response.data};
+  }
+};
+
+export {showError, showSuccess, updateNotification, catchError};

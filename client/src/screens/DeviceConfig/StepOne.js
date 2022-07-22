@@ -15,47 +15,61 @@ import {getDeviceType} from '../../utils/getDeviceType';
 
 import {object} from 'yup';
 import NextBtn from '../../components/NextBtn';
+import Loader from '../../components/Loader';
 const {height, width} = Dimensions.get('window');
 const StepOne = ({navigation}) => {
-  let initialState = [];
+  const [disable, setDisable] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [item, setItem] = useState([]);
+  const [controllerTypeId, setControllerTypeId] = useState('');
+  //console.log(item);
+
   useEffect(() => {
+    let initialState = null;
     const init = async () => {
       const data = await getDeviceType();
-      initialState = [...data];
+      initialState = data.devicetype;
       setItem(initialState);
       console.log(data);
+      setIsLoading(false);
     };
     init();
+    console.log('jaiho');
+    setDisable(true);
+    setControllerTypeId('');
   }, []);
   const handleSelector = (id, index) => {
+    setControllerTypeId(id);
+    setDisable(false);
     let style = {
       color: '#79c142',
     };
     let newState = [...item];
 
-    setTimeout(() => {
-      newState = item.map(obj => {
-        // 👇️ if id equals 2, update country property
-        if (obj._id === id) {
-          obj = Object.assign({...obj, color: '#79c142'});
-          return obj;
-        }
-        if (object._id !== id) {
-          obj = Object.assign({...obj, color: '#fff'});
-          return obj;
-        }
+    newState = item.map(obj => {
+      // 👇️ if id equals 2, update country property
+      if (obj._id === id) {
+        obj = Object.assign({...obj, color: '#79c142'});
 
-        // 👇️ otherwise return object as is
-        //console.log(obj);
         return obj;
-      });
+      }
+      if (object._id !== id) {
+        obj = Object.assign({...obj, color: '#fff'});
 
-      setItem(newState);
-    }, 1000);
+        return obj;
+      }
+
+      // 👇️ otherwise return object as is
+      //console.log(obj);
+
+      return obj;
+    });
+
+    setItem(newState);
   };
+  console.log(controllerTypeId);
   const nextStep = () => {
-    navigation.navigate('StepTwo');
+    navigation.navigate('StepTwo', {controllerTypeId});
   };
   return (
     <MainLayout pageHeight={height - 80}>
@@ -65,7 +79,10 @@ const StepOne = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           style={styles.scroContainer}>
           <View style={styles.selectorContainer}>
-            {item &&
+            {isLoading ? (
+              <Loader />
+            ) : (
+              item &&
               item.map((item, index) => {
                 return (
                   <TouchableOpacity
@@ -86,11 +103,12 @@ const StepOne = ({navigation}) => {
                     </Text>
                   </TouchableOpacity>
                 );
-              })}
+              })
+            )}
           </View>
         </ScrollView>
       </View>
-      <NextBtn action={nextStep} title="Next" />
+      <NextBtn action={nextStep} title="Next" disable={disable} />
     </MainLayout>
   );
 };
@@ -116,6 +134,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 0,
     flexWrap: 'wrap',
+    position: 'relative',
   },
   selector: {
     width: (width - 50) / 3,

@@ -1,3 +1,5 @@
+import {client} from '../api/client';
+import {catchError} from './helper';
 const data = [
   {
     _id: 1,
@@ -43,8 +45,11 @@ const data = [
 
 export const getDeviceType = async () => {
   try {
+    const config = {headers: {'Content-Type': 'application/json'}};
+    const {data} = await client.get(`/device/device-type`, config);
+    //console.log('>>>>', data);
     return data;
   } catch (error) {
-    return console.log(error);
+    return catchError(error);
   }
 };
