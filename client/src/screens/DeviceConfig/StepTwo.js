@@ -20,6 +20,8 @@ import InnerLoader from '../../components/InnerLoader';
 import {useState, useEffect} from 'react';
 import {getAuthAsyncStorage} from '../../utils/getAuthAsyncStorage';
 import {configureDevice} from '../../utils/configureDevice';
+import NextBtn from '../../components/NextBtn';
+import {useSelector} from 'react-redux';
 
 const initialValues = {
   deviceId: '',
@@ -34,19 +36,22 @@ const deviceIdSchema = yup.object().shape({
 const {height, width} = Dimensions.get('window');
 
 const StepTwo = ({navigation, route}) => {
+  const {loading, isAuthenticated, auth} = useSelector(state => state.auth);
   const {controllerTypeId} = route.params;
   let userStorage = null;
-  let user = null;
-  console.log(controllerTypeId);
+  const [user, setUser] = useState(null);
+  console.log('sdfsdfsdf', controllerTypeId);
   const [disable, setDisable] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [succesMsg, setSuccessMsg] = useState(null);
+  const [controller, setController] = useState(null);
   const handleDeviceID = async (values, FormikActions) => {
     Keyboard.dismiss();
     setIsLoading(true);
 
     const res = await configureDevice(
-      user._id,
+      auth['user']._id,
       values.deviceId,
       controllerTypeId,
     );
@@ -60,19 +65,26 @@ const StepTwo = ({navigation, route}) => {
     } else {
       FormikActions.resetForm();
       setIsLoading(false);
-      navigation.navigate('StepThree', {userId: user._id});
+      setDisable(false);
+      setSuccessMsg(res.message);
+      setController(res.controller);
       return console.log(res);
     }
   };
   useEffect(() => {
     const load = async () => {
+      let temp;
       userStorage = await getAuthAsyncStorage();
       userStorage = JSON.stringify(userStorage);
-      user = JSON.parse(userStorage);
-      user = user['user'];
+      temp = JSON.parse(userStorage);
+      temp = temp['user'];
+      setUser(temp);
     };
     load();
   }, []);
+  const nextStep = () => {
+    navigation.navigate('StepThree', {controller});
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -86,22 +98,31 @@ const StepTwo = ({navigation, route}) => {
             return (
               <Fragment>
                 <View style={styles.container}>
-                  <Text style={styles.mainHeading}>Please Enter Device ID</Text>
+                  {succesMsg == null ? (
+                    <Fragment>
+                      <Text style={styles.mainHeading}>
+                        Please Enter Device ID
+                      </Text>
 
-                  <Input
-                    value={values.deviceId}
-                    name="deviceId"
-                    placheHolder="Enter Device ID"
-                    iconType="user"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                  />
-                  {error == null ? null : (
-                    <Text style={styles.errors}>{error}</Text>
+                      <Input
+                        value={values.deviceId}
+                        name="deviceId"
+                        placheHolder="Enter Device ID"
+                        iconType="user"
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                      />
+                      <NextBtnSubmit buttonTitle="send" position="relative" />
+                      {error == null ? null : (
+                        <Text style={styles.errors}>{error}</Text>
+                      )}
+                    </Fragment>
+                  ) : (
+                    <Text style={styles.success}>{succesMsg}</Text>
                   )}
                 </View>
-                <NextBtnSubmit buttonTitle="Next" disable={disable} />
+                <NextBtn action={nextStep} title="Next" disable={disable} />
               </Fragment>
             );
           }}
@@ -130,6 +151,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     borderRadius: 10,
     borderColor: '#ff0000',
+    borderWidth: 1,
+    padding: 10,
+    marginTop: 20,
+    width: '100%',
+  },
+  success: {
+    fontSize: 14,
+    color: '#79c142',
+    borderRadius: 10,
+    borderColor: '#fff',
     borderWidth: 1,
     padding: 10,
     marginTop: 20,

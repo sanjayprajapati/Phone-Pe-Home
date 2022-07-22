@@ -43,10 +43,19 @@ const data = [
   },
 ];
 
-export const getDeviceType = async () => {
+export const updateDeviceName = async (
+  name,
+  roomTypeId,
+  userId,
+  controllerId,
+) => {
   try {
     const config = {headers: {'Content-Type': 'application/json'}};
-    const {data} = await client.get(`/device/controller-type`, config);
+    const {data} = await client.put(
+      `/user/update-device-name`,
+      {name, roomTypeId, userId, controllerId},
+      config,
+    );
     //console.log('>>>>', data);
     return data;
   } catch (error) {

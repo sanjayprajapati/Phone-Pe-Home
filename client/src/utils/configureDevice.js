@@ -9,13 +9,13 @@ export const configureDevice = async (
   try {
     const config = {headers: {'Content-Type': 'application/json'}};
     const {data} = await client.put(
-      `/user/configure-device`,
+      `https://origin8home.herokuapp.com/api/v1/user/configure-device`,
       {userId, controllerId, controllerTypeId},
       config,
     );
     // console.log(data);
     return data;
   } catch (error) {
-    return catchError(error);
+    return catchError(error.message);
   }
 };

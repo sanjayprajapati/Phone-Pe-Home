@@ -41,8 +41,8 @@ const {height, width} = Dimensions.get('window');
 
 const FinalStep = ({navigation}) => {
   let data;
-
-  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [roomTypeName, setRoomTypeName] = useState('Select Room Type');
   const [roomtypeid, setRoomtyleid] = useState('');
   const [display, setDisplay] = useState('none');
@@ -89,13 +89,27 @@ const FinalStep = ({navigation}) => {
     navigation.navigate('Settings', {screen: 'AddDevice'});
   };
   //console.log('>>>', isLoading);
+
   useEffect(() => {
     const getData = async () => {
       data = await getRoomType();
-      console.log(data);
+
       setSetNewData(data);
+      console.log(data);
+      setIsLoading(false);
     };
     getData();
+  }, []);
+  useEffect(() => {
+    const load = async () => {
+      let temp;
+      userStorage = await getAuthAsyncStorage();
+      userStorage = JSON.stringify(userStorage);
+      temp = JSON.parse(userStorage);
+      temp = temp['user'];
+      setUser(temp);
+    };
+    load();
   }, []);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -138,7 +152,10 @@ const FinalStep = ({navigation}) => {
                     autoCorrect={false}
                   />
                 </View>
-                <NextBtnSubmit buttonTitle="Create Device" />
+                <NextBtnSubmit
+                  buttonTitle="Create Device"
+                  position="absolute"
+                />
               </Fragment>
             );
           }}

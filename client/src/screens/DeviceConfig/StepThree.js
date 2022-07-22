@@ -1,6 +1,6 @@
 import {Dimensions, StyleSheet, Text, View, FlatList} from 'react-native';
 
-import {useNetInfo} from '@react-native-community/netinfo';
+import {NetInfo} from '@react-native-community/netinfo';
 import WifiManager from 'react-native-wifi-reborn';
 import React, {useEffect} from 'react';
 import MainLayout from '../Layouts/MainLayout';
@@ -10,32 +10,13 @@ import CheckBox from '@react-native-community/checkbox';
 import {useState} from 'react';
 import NextBtn from '../../components/NextBtn';
 const {height, width} = Dimensions.get('window');
-const StepThree = ({navigation}) => {
+const StepThree = ({navigation, route}) => {
+  const {controller} = route.params;
+  console.log(controller);
   const [isSelected, setSelected] = useState(false);
-  const netInfo = useNetInfo();
-  const wifi = async () => {
-    try {
-      const data = await WifiManager.connectToProtectedSSID(
-        ssid,
-        password,
-        isWep,
-      );
-      console.log('Connected successfully!', {data});
-      //setConneted({connected: true, ssid});
-    } catch (error) {
-      //setConneted({connected: false, error: error.message});
-      console.log('Connection failed!', {error});
-    }
+  const [WifiName, setWifyName] = useState(null);
+  const [wifiIp, setWifiIp] = useState(null);
 
-    try {
-      const ssid = await WifiManager.getCurrentWifiSSID();
-      //setSsid(ssid);
-      console.log('Your current connected wifi SSID is ' + ssid);
-    } catch (error) {
-      // setSsid('Cannot get current SSID!' + error.message);
-      console.log('Cannot get current SSID!', {error});
-    }
-  };
   useEffect(() => {
     const WWS = async () => {
       const granted = await PermissionsAndroid.request(
@@ -51,14 +32,22 @@ const StepThree = ({navigation}) => {
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         let wifiList = await WifiManager.loadWifiList(); //wifiList will be Array<WifiEntry>
-        console.log('wifi list', wifiList);
+
+        console.log('wifi list', wifiList, ipAddr);
+        wifiList.forEach(wifi => {
+          if (wifi.SSID === 'PHONEPEHOME') {
+            setWifyName(wifi.SSID);
+          }
+        });
+        let ipAddr = await WifiManager.getIP();
+        setWifiIp(ipAddr);
+        console.log(ipAddr, WifiName);
       } else {
-        // Permission denied
+        console.log('not permited');
       }
     };
     WWS();
-    wifi();
-  }, []);
+  }, [isSelected]);
 
   const setSelection = () => {
     if (isSelected) {
@@ -69,7 +58,7 @@ const StepThree = ({navigation}) => {
   };
   const nextStep = () => {
     console.log('YEs');
-    navigation.navigate('StepFour');
+    navigation.navigate('StepFour', {WifiName, wifiIp});
   };
   return (
     <MainLayout pageHeight={height - 80}>
@@ -84,8 +73,7 @@ const StepThree = ({navigation}) => {
             . Go to Settings, select WiFi Settings
           </Text>
           <Text style={styles.listItem}>
-            . Select WiFi with the name "PHONE_PE_HOME_REL_3_XXX", connect to
-            that WiFi.
+            . Select WiFi with the name "PHONEPEHOME", connect to that WiFi.
           </Text>
           <Text style={styles.listItem}>
             . Goback Here and Proceed to next step.
@@ -95,10 +83,23 @@ const StepThree = ({navigation}) => {
           style={styles.checkboxContainer}
           onPress={setSelection}>
           <CheckBox value={isSelected} style={styles.checkbox} />
-          <Text style={styles.label}>Connect to "PhonePeHome_3_rel_xxx"</Text>
+
+          <Text style={styles.label}>Connect to "PHONEPEHOME"</Text>
         </TouchableOpacity>
+        <Text style={[styles.listItem, {color: '#79c142', fontSize: 12}]}>
+          Current you are{' '}
+          {WifiName === 'PHONEPEHOME'
+            ? 'contect to PHONEPEHOME'
+            : 'not connected to PHONEPEHOME.'}
+        </Text>
       </View>
-      <NextBtn title="Next" action={nextStep} />
+      <NextBtn
+        title="Next"
+        action={nextStep}
+        disable={
+          isSelected == true && WifiName === 'PHONEPEHOME' ? false : true
+        }
+      />
     </MainLayout>
   );
 };

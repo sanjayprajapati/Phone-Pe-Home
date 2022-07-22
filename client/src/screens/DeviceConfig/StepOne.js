@@ -31,10 +31,10 @@ const StepOne = ({navigation}) => {
       initialState = data.devicetype;
       setItem(initialState);
       console.log(data);
-      setIsLoading(false);
     };
     init();
     console.log('jaiho');
+    setIsLoading(false);
     setDisable(true);
     setControllerTypeId('');
   }, []);
@@ -78,34 +78,34 @@ const StepOne = ({navigation}) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.scroContainer}>
-          <View style={styles.selectorContainer}>
-            {isLoading ? (
-              <Loader />
-            ) : (
-              item &&
-              item.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    style={styles.selector}
-                    onPress={() => handleSelector(item._id, index)}
-                    key={item._id}>
-                    <Image
-                      source={require('../../assets/images/node.png')}
-                      style={styles.node}
-                    />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <View style={styles.selectorContainer}>
+              {item &&
+                item.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      style={styles.selector}
+                      onPress={() => handleSelector(item._id, index)}
+                      key={item._id}>
+                      <Image
+                        source={require('../../assets/images/node.png')}
+                        style={styles.node}
+                      />
 
-                    <Text
-                      style={[
-                        styles.typeText,
-                        {color: item.color ? item.color : '#fff'},
-                      ]}>
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })
-            )}
-          </View>
+                      <Text
+                        style={[
+                          styles.typeText,
+                          {color: item.color ? item.color : '#fff'},
+                        ]}>
+                        {item.name}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+            </View>
+          )}
         </ScrollView>
       </View>
       <NextBtn action={nextStep} title="Next" disable={disable} />

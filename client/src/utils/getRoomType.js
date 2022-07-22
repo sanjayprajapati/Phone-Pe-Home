@@ -1,33 +1,17 @@
 import {client} from '../api/client';
-
-const data = [
-  {
-    _id: '1',
-    roomtype: 'Living Room',
-  },
-  {
-    _id: '2',
-    roomtype: 'Kitchen',
-  },
-  {
-    _id: '3',
-    roomtype: 'Bedroom',
-  },
-  {
-    _id: '4',
-    roomtype: 'Bathroom',
-  },
-  {
-    _id: '5',
-    roomtype: 'Other',
-  },
-];
+import {catchError, showError} from './helper';
 
 export const getRoomType = async () => {
   try {
+    const config = {headers: {'Content-Type': 'application/json'}};
+    const {data} = await client.get(
+      `${client}/rooms/room-type`,
+
+      config,
+    );
     console.log(data);
-    return data;
+    return data.rooms;
   } catch (error) {
-    return console.log(error);
+    return catchError(error.message);
   }
 };
