@@ -24,6 +24,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import SelectDropdown from '../../components/SelectDropdown';
 import {async} from 'validate.js';
 import {getRoomType} from '../../utils/getRoomType';
+import {getAuthAsyncStorage} from '../../utils/getAuthAsyncStorage';
+import {updateDeviceName} from '../../utils/updateDeviceName';
 
 const initialValues = {
   devicename: '',
@@ -39,7 +41,9 @@ const createDeviceSchema = yup.object().shape({
 });
 const {height, width} = Dimensions.get('window');
 
-const FinalStep = ({navigation}) => {
+const FinalStep = ({navigation, route}) => {
+  const {controller} = route.params;
+  console.log(controller);
   let data;
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -66,27 +70,32 @@ const FinalStep = ({navigation}) => {
   };
 
   const handleDeviceID = async (values, FormikActions) => {
-    // Keyboard.dismiss();
-    // setIsLoading(true);
-    // const res = await getDeviceID(values);
-    // FormikActions.setSubmitting(false);
-    // console.log(res);
-    // if (!res) {
-    //   FormikActions.resetForm();
-    //   console.log('succes false', res);
-    //   setIsLoading(false);
-    //   setInit(initialValues);
-    //   setRoomTypeName('Select Room Type');
-    //   return;
-    // } else {
-    //   FormikActions.resetForm();
-    //   setIsLoading(false);
-    //   setVal('');
-    //   setRoomTypeName('Select Room Type');
-    //   //navigation.navigate('StepThree');
-    //   return console.log(res);
-    // }
-    navigation.navigate('Settings', {screen: 'AddDevice'});
+    Keyboard.dismiss();
+    setIsLoading(true);
+    const res = await updateDeviceName(
+      values.devicename,
+      values.roomtypeId,
+      user._id,
+      controller._id,
+    );
+    FormikActions.setSubmitting(false);
+    console.log(res);
+    if (!res) {
+      FormikActions.resetForm();
+      console.log('succes false', res);
+      setIsLoading(false);
+      setInit(initialValues);
+      setRoomTypeName('Select Room Type');
+      return;
+    } else {
+      FormikActions.resetForm();
+      setIsLoading(false);
+
+      setRoomTypeName('Select Room Type');
+      console.log(res);
+      navigation.navigate('Settings', {screen: 'DeviceSettings'});
+      return console.log(res);
+    }
   };
   //console.log('>>>', isLoading);
 
@@ -103,13 +112,16 @@ const FinalStep = ({navigation}) => {
   useEffect(() => {
     const load = async () => {
       let temp;
+      let userStorage;
       userStorage = await getAuthAsyncStorage();
       userStorage = JSON.stringify(userStorage);
       temp = JSON.parse(userStorage);
       temp = temp['user'];
+
       setUser(temp);
     };
     load();
+    console.log('userid is=======', user._id);
   }, []);
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>

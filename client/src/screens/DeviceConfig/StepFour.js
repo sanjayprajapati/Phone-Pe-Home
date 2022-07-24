@@ -7,10 +7,10 @@ import {Fragment} from 'react';
 const {height, width} = Dimensions.get('window');
 
 const StepFour = ({navigation, route}) => {
-  const {WifiName, wifiIp} = route.params;
+  const {WifiName, wifiIp, controller} = route.params;
   console.log(WifiName);
   const nextStep = () => {
-    navigation.navigate('FinalStep');
+    navigation.navigate('FinalStep', {controller});
   };
   return (
     <Fragment>

@@ -58,7 +58,7 @@ const StepThree = ({navigation, route}) => {
   };
   const nextStep = () => {
     console.log('YEs');
-    navigation.navigate('StepFour', {WifiName, wifiIp});
+    navigation.navigate('StepFour', {WifiName, wifiIp, controller});
   };
   return (
     <MainLayout pageHeight={height - 80}>

@@ -63,7 +63,8 @@ const StepTwo = ({navigation, route}) => {
       setIsLoading(false);
       return;
     } else {
-      FormikActions.resetForm();
+      //FormikActions.resetForm();
+      console.log(res);
       setIsLoading(false);
       setDisable(false);
       setSuccessMsg(res.message);

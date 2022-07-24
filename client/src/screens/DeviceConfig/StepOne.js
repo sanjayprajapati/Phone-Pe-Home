@@ -31,10 +31,12 @@ const StepOne = ({navigation}) => {
       initialState = data.devicetype;
       setItem(initialState);
       console.log(data);
+
+      setIsLoading(false);
     };
     init();
     console.log('jaiho');
-    setIsLoading(false);
+
     setDisable(true);
     setControllerTypeId('');
   }, []);

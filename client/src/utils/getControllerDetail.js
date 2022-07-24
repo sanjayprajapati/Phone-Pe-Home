@@ -1,17 +1,16 @@
 import {client} from '../api/client';
-import {catchError, showError} from './helper';
+import {catchError} from './helper';
 
-export const getRoomType = async () => {
+export const getControllerDetail = async userId => {
   try {
     const config = {headers: {'Content-Type': 'application/json'}};
     const {data} = await client.get(
-      `/rooms/room-type`,
-
+      `/device/controllers-with-room-name/${userId}`,
       config,
     );
     console.log(data);
-    return data.rooms;
+    return data;
   } catch (error) {
-    return catchError(error.message);
+    return catchError(error);
   }
 };

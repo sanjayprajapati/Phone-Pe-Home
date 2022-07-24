@@ -22,7 +22,7 @@ const Settings = ({navigation}) => {
     navigation.dispatch(CommonActions.goBack());
   };
   const parentScreen = () => {
-    navigation.goBack();
+    navigation.goBack('MainSettings');
   };
 
   const Edit = event => {
